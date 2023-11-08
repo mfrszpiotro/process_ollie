@@ -2,6 +2,7 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 def angle_between(v1:npt.ArrayLike, v2:npt.ArrayLike) -> float:
     """Angle calculation between two vectors is performed as follows:
@@ -29,18 +30,31 @@ def calc_angle(ptA:pd.Series, ptB:pd.Series, ptC:pd.Series, ptD:pd.Series) -> fl
     # return vg.angle(v1, v2)
     return angle_between(v1,v2)*180/np.pi
 
+def calc_distance_column(colx:pd.Series, coly:pd.Series, colz:pd.Series):
+    p1 = np.array([colx, coly, colz])
+    p2 = np.array([colx.shift(1), coly.shift(1), colz.shift(1)])
+
+    squared_dist = np.sum((p1-p2)**2, axis=0)
+    dist = np.sqrt(squared_dist)
+    return dist
+
 plt.close("all")
 df = pd.read_csv('data\\setup_mid\\good\\20231106_1224\\trimmed - 20231106122417713.csv')
-crotch_data = df[["Time",
+df = df[["Time",
                   "KneeRight_x",  "KneeRight_y",  "KneeRight_z",
                   "HipRight_x",   "HipRight_y",   "HipRight_z",
                   "KneeLeft_x",   "KneeLeft_y",   "KneeLeft_z",   
-                  "HipLeft_x",    "HipLeft_y",    "HipLeft_z"]]
+                  "HipLeft_x",    "HipLeft_y",    "HipLeft_z",
+                  "FootRight_x",  "FootRight_y",  "FootRight_z"]]
 
-crotch_data["crotch_angle"] = crotch_data.apply(
+df["crotch_angle"] = df.apply(
     lambda row: calc_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1)
 
-print(crotch_data)
-crotch_data.plot(kind="line", x="Time", y="crotch_angle", label="Crotch angle [deg]", 
+df['foot_speed'] = calc_distance_column(df.FootRight_x, df.FootRight_y, df.FootRight_z)/df.Time
+
+print(df)
+df.plot(kind="line", x="Time", y="crotch_angle", label="Crotch angle [deg]", 
         title="Crotch angle over time while performing Ollie")
+df.plot(kind="line", x="Time", y="foot_speed", label="Right foot speed [unit/s]", 
+        title="Foot speed over time while performing Ollie")
 plt.show()
