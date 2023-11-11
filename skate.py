@@ -3,6 +3,7 @@ import numpy.typing as npt
 import pandas as pd
 import matplotlib.pyplot as plt
 import math
+from scipy import signal
 
 def angle_between(v1:npt.ArrayLike, v2:npt.ArrayLike) -> float:
     """Angle calculation between two vectors is performed as follows:
@@ -50,11 +51,22 @@ df = df[["Time",
 df["crotch_angle"] = df.apply(
     lambda row: calc_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1)
 
+df['crotch_angle_smooth'] = signal.savgol_filter(df['crotch_angle'], window_length=11, polyorder=3, mode="nearest")
+
 df['foot_speed'] = calc_distance_column(df.FootRight_x, df.FootRight_y, df.FootRight_z)/df.Time
 
+df['foot_speed_smooth'] = signal.savgol_filter(df['foot_speed'], window_length=6, polyorder=3, mode="nearest")
+
 print(df)
+
+ax_crotch = df.plot(kind="line", x="Time", y="crotch_angle_smooth", label="Smoothened crotch angle [deg]")
+
 df.plot(kind="line", x="Time", y="crotch_angle", label="Crotch angle [deg]", 
-        title="Crotch angle over time while performing Ollie")
-df.plot(kind="line", x="Time", y="foot_speed", label="Right foot speed [unit/s]", 
-        title="Foot speed over time while performing Ollie")
+        title="Crotch angle over time while performing Ollie", ax=ax_crotch)
+
+ax_foot = df.plot(kind="line", x="Time", y="foot_speed_smooth", label="Smoothened foot speed [unit/s]")
+
+df.plot(kind="line", x="Time", y="foot_speed", label="Foot speed [unit/s]", 
+        title="Foot speed over time while performing Ollie", ax=ax_foot)
+
 plt.show()
