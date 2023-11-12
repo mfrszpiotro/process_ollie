@@ -31,13 +31,19 @@ def calc_angle(ptA:pd.Series, ptB:pd.Series, ptC:pd.Series, ptD:pd.Series) -> fl
     # return vg.angle(v1, v2)
     return angle_between(v1,v2)*180/np.pi
 
-def calc_distance_column(colx:pd.Series, coly:pd.Series, colz:pd.Series):
+def calc_point_speed(colx:pd.Series, coly:pd.Series, colz:pd.Series, time:pd.Series):
     p1 = np.array([colx, coly, colz])
     p2 = np.array([colx.shift(1), coly.shift(1), colz.shift(1)])
 
     squared_dist = np.sum((p1-p2)**2, axis=0)
     dist = np.sqrt(squared_dist)
-    return dist
+    return dist/time
+
+def calc_point_distance_from_floor(
+        colx:pd.Series, coly:pd.Series, colz:pd.Series, floorx:pd.Series, floory:pd.Series, floorz:pd.Series, floorw:pd.Series):
+    numerator = colx*floorx + coly*floory + colz*floorz + floorw
+    denominator = np.sqrt(floorx*floorx + floory*floory + floorz*floorz)
+    return numerator/denominator
 
 plt.close("all")
 df = pd.read_csv('data\\setup_mid\\good\\20231106_1224\\trimmed - 20231106122417713.csv')
@@ -46,27 +52,35 @@ df = df[["Time",
                   "HipRight_x",   "HipRight_y",   "HipRight_z",
                   "KneeLeft_x",   "KneeLeft_y",   "KneeLeft_z",   
                   "HipLeft_x",    "HipLeft_y",    "HipLeft_z",
-                  "FootRight_x",  "FootRight_y",  "FootRight_z"]]
+                  "FootRight_x",  "FootRight_y",  "FootRight_z",
+                  "Floor_x",  "Floor_y",  "Floor_z", "Floor_w"]]
 
 df["crotch_angle"] = df.apply(
     lambda row: calc_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1)
 
 df['crotch_angle_smooth'] = signal.savgol_filter(df['crotch_angle'], window_length=11, polyorder=3, mode="nearest")
 
-df['foot_speed'] = calc_distance_column(df.FootRight_x, df.FootRight_y, df.FootRight_z)/df.Time
+df['foot_speed'] = calc_point_speed(df.FootRight_x, df.FootRight_y, df.FootRight_z, df.Time)
 
 df['foot_speed_smooth'] = signal.savgol_filter(df['foot_speed'], window_length=6, polyorder=3, mode="nearest")
+
+df['foot_floor_distance'] = calc_point_distance_from_floor(
+    df.FootRight_x, df.FootRight_y, df.FootRight_z, df.Floor_x, df.Floor_y, df.Floor_z, df.Floor_w)
+
+df['foot_floor_distance_smooth'] = signal.savgol_filter(df['foot_floor_distance'], window_length=11, polyorder=3, mode="nearest")
 
 print(df)
 
 ax_crotch = df.plot(kind="line", x="Time", y="crotch_angle_smooth", label="Smoothened crotch angle [deg]")
-
 df.plot(kind="line", x="Time", y="crotch_angle", label="Crotch angle [deg]", 
         title="Crotch angle over time while performing Ollie", ax=ax_crotch)
 
 ax_foot = df.plot(kind="line", x="Time", y="foot_speed_smooth", label="Smoothened foot speed [unit/s]")
-
 df.plot(kind="line", x="Time", y="foot_speed", label="Foot speed [unit/s]", 
         title="Foot speed over time while performing Ollie", ax=ax_foot)
+
+ax_floor_dist = df.plot(kind="line", x="Time", y="foot_floor_distance_smooth", label="Smoothened foot-floor distance [unit]")
+df.plot(kind="line", x="Time", y="foot_floor_distance", label="Foot-floor distance [unit]", 
+        title="Foot-floor distance over time while performing Ollie", ax=ax_floor_dist)
 
 plt.show()
