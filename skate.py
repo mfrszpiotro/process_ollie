@@ -2,7 +2,6 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 import matplotlib.pyplot as plt
-import math
 from scipy import signal
 
 def angle_between(v1:npt.ArrayLike, v2:npt.ArrayLike) -> float:
