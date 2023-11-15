@@ -19,30 +19,30 @@ def get_point_distance_from_floor(
 
 
 # RIGHT FOOT-FLOOR DISTANCE
-def add_and_plot(df: pd.DataFrame):
-    df["foot_floor_distance"] = get_point_distance_from_floor(
-        df.FootRight_x,
-        df.FootRight_y,
-        df.FootRight_z,
+def add_and_plot(df: pd.DataFrame, point_name = "FootRight"):
+    df[f"{point_name}_floor_distance"] = get_point_distance_from_floor(
+        df[f"{point_name}_x"],
+        df[f"{point_name}_y"],
+        df[f"{point_name}_z"],
         df.Floor_x,
         df.Floor_y,
         df.Floor_z,
         df.Floor_w,
     )
-    df["foot_floor_distance_smooth"] = signal.savgol_filter(
-        df["foot_floor_distance"], window_length=11, polyorder=3, mode="nearest"
+    df[f"{point_name}_floor_distance_smooth"] = signal.savgol_filter(
+        df[f"{point_name}_floor_distance"], window_length=11, polyorder=3, mode="nearest"
     )
     ax_floor_dist = df.plot(
         kind="line",
         x="Time",
-        y="foot_floor_distance_smooth",
-        label="Smoothened foot-floor distance [unit]",
+        y=f"{point_name}_floor_distance_smooth",
+        label=f"Smoothened {point_name}-floor distance [unit]",
     )
     df.plot(
         kind="line",
         x="Time",
-        y="foot_floor_distance",
-        label="Foot-floor distance [unit]",
-        title="Foot-floor distance over time while performing Ollie",
+        y=f"{point_name}_floor_distance",
+        label=f"{point_name}-floor distance [unit]",
+        title=f"{point_name}-floor distance over time while performing Ollie",
         ax=ax_floor_dist,
     )

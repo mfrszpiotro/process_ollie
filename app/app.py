@@ -50,8 +50,8 @@ for entry in os.scandir(data_directory):
         ],
     )
 
-    angle.add_and_plot(df)
-    #point_floor_distance.add_and_plot(df)
+    #angle.add_and_plot(df)
+    point_floor_distance.add_and_plot(df, "HipRight")
     #point_speed.add_and_plot(df)
 
     plt.show(block=False)
