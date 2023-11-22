@@ -18,8 +18,22 @@ def get_point_distance_from_floor(
     return numerator / denominator
 
 
-# RIGHT FOOT-FLOOR DISTANCE
-def add_and_plot(df: pd.DataFrame, point_name = "FootRight"):
+def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight"):
+    df[f"{jump_point_factor}_floor_distance"] = get_point_distance_from_floor(
+        df[f"{jump_point_factor}_x"],
+        df[f"{jump_point_factor}_y"],
+        df[f"{jump_point_factor}_z"],
+        df.Floor_x,
+        df.Floor_y,
+        df.Floor_z,
+        df.Floor_w,
+    )
+    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    max_index = result.name
+    return df[max_index-20:max_index+30]
+
+
+def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
     df[f"{point_name}_floor_distance"] = get_point_distance_from_floor(
         df[f"{point_name}_x"],
         df[f"{point_name}_y"],
@@ -30,7 +44,10 @@ def add_and_plot(df: pd.DataFrame, point_name = "FootRight"):
         df.Floor_w,
     )
     df[f"{point_name}_floor_distance_smooth"] = signal.savgol_filter(
-        df[f"{point_name}_floor_distance"], window_length=11, polyorder=3, mode="nearest"
+        df[f"{point_name}_floor_distance"],
+        window_length=11,
+        polyorder=3,
+        mode="nearest",
     )
     ax_floor_dist = df.plot(
         kind="line",

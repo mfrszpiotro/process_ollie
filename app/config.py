@@ -1,1 +1,1 @@
-DATA_DIR = "..\\data\\interim"
+DATA_DIR = "..\\data\\raw\\raw"

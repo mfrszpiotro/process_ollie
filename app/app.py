@@ -50,9 +50,11 @@ for entry in os.scandir(data_directory):
         ],
     )
 
-    #angle.add_and_plot(df)
-    point_floor_distance.add_and_plot(df, "HipRight")
-    #point_speed.add_and_plot(df)
+    # angle.add_and_plot(df)
+    # point_floor_distance.add_and_plot(df, "HipRight")
+    # point_speed.add_and_plot(df)
+    df = point_floor_distance.strip_to_jump(df)
+    print(df)
 
     plt.show(block=False)
     response = input("Proceed with next file? (Y/n): ")
@@ -61,7 +63,9 @@ for entry in os.scandir(data_directory):
     if response in ("N", "n"):
         break
     else:
-        raise ValueError("Invalid response (write 'Y', 'y' or press Enter to proceed with files.)")
+        raise ValueError(
+            "Invalid response (write 'Y', 'y' or press Enter to proceed with files.)"
+        )
 
 
 print("No more files to proceed with!")
