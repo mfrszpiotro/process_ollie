@@ -59,7 +59,6 @@ def get_angle(ptA: pd.Series, ptB: pd.Series, ptC: pd.Series, ptD: pd.Series) ->
     return angle_between(v1, v2) * 180 / np.pi
 
 
-# CROTCH ANGLE
 def add_and_plot(df: pd.DataFrame):
     df["crotch_angle"] = df.apply(
         lambda row: get_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1

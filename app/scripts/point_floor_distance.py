@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy import signal
+import os
 
 
 def get_point_distance_from_floor(
@@ -18,7 +19,15 @@ def get_point_distance_from_floor(
     return numerator / denominator
 
 
-def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight"):
+def save_strip_to_jump(
+    df: pd.DataFrame, relative_path, subfolder, filename, jump_point_factor="HipRight"
+):
+    df = strip_to_jump(df, jump_point_factor)
+    full_filepath = os.path.join(relative_path, subfolder, f"jump_{filename}")
+    df.to_csv(full_filepath, index=False)
+
+
+def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight") -> pd.DataFrame:
     df[f"{jump_point_factor}_floor_distance"] = get_point_distance_from_floor(
         df[f"{jump_point_factor}_x"],
         df[f"{jump_point_factor}_y"],
@@ -30,7 +39,7 @@ def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight"):
     )
     result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
     max_index = result.name
-    return df[max_index-20:max_index+30]
+    return df[max_index - 20 : max_index + 30]
 
 
 def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
