@@ -1,4 +1,4 @@
-from scripts import angle, point_floor_distance, point_speed
+from scripts import angle, point_floor_distance, point_speed, point_point_distance
 import config
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -33,10 +33,11 @@ for entry in os.scandir(data_directory):
     )
     print(f'Loaded file: {filepath}')
 
-    angle.add_and_plot(df)
+    # angle.add_and_plot(df)
     # point_floor_distance.add_and_plot(df, "HipRight")
     # point_floor_distance.save_strip_to_jump(df, config.INTERIM_DATA_DIR, selected_subfolder, entry.name)
     # point_speed.add_and_plot(df)
+    point_point_distance.add_and_plot(df)
 
     plt.show(block=False)
     response = input("Proceed with next file? (Y/n): ")
