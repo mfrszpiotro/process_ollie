@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from scipy import signal
+from bisect import bisect_left, bisect_right
 import os
 
 
@@ -20,14 +21,27 @@ def get_point_distance_from_floor(
 
 
 def save_strip_to_jump(
-    df: pd.DataFrame, relative_path, subfolder, filename, jump_point_factor="HipRight"
+    df: pd.DataFrame,
+    relative_path: str,
+    subfolder: str,
+    filename: str,
+    jump_point_factor="HipRight",
+    byTime=True,
 ):
-    df = strip_to_jump(df, jump_point_factor)
+    if byTime:
+        df = strip_to_jump_by_time(df, jump_point_factor)
+    else:
+        df = strip_to_jump_by_frames(df, jump_point_factor)
     full_filepath = os.path.join(relative_path, subfolder, f"jump_{filename}")
     df.to_csv(full_filepath, index=False)
 
 
-def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight") -> pd.DataFrame:
+def strip_to_jump_by_frames(
+    df: pd.DataFrame,
+    jump_point_factor="HipRight",
+    left_dist=15,
+    right_dist=30,
+) -> pd.DataFrame:
     df[f"{jump_point_factor}_floor_distance"] = get_point_distance_from_floor(
         df[f"{jump_point_factor}_x"],
         df[f"{jump_point_factor}_y"],
@@ -39,7 +53,49 @@ def strip_to_jump(df: pd.DataFrame, jump_point_factor="HipRight") -> pd.DataFram
     )
     result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
     max_index = result.name
-    return df[max_index - 20 : max_index + 30]
+    return df[max_index - left_dist : max_index + right_dist]
+
+
+def strip_to_jump_by_time(
+    df: pd.DataFrame, jump_point_factor="HipRight", left_dist=0.5, right_dist=1.0
+) -> pd.DataFrame:
+    df[f"{jump_point_factor}_floor_distance"] = get_point_distance_from_floor(
+        df[f"{jump_point_factor}_x"],
+        df[f"{jump_point_factor}_y"],
+        df[f"{jump_point_factor}_z"],
+        df.Floor_x,
+        df.Floor_y,
+        df.Floor_z,
+        df.Floor_w,
+    )
+    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    left_bound, right_bound = find_time_bounds_indexes(
+        df, left_dist, right_dist, result["Time"]
+    )
+    print(f"Left index from time boundary: {left_bound}, Right one: {right_bound}")
+    return df[left_bound:right_bound]
+
+
+def find_time_bounds_indexes(
+    df: pd.DataFrame, left_seconds: float, right_seconds: float, ref_time: float
+) -> (int, int):
+    column_name = "Time"
+    left_bound = get_closests(df, column_name, ref_time - left_seconds)
+    right_bound = get_closests(df, column_name, ref_time + right_seconds)
+    if isinstance(left_bound, tuple):
+        left_bound = left_bound[0]
+    if isinstance(right_bound, tuple):
+        right_bound = right_bound[1]
+    return left_bound, right_bound
+
+
+def get_closests(df: pd.DataFrame, column: str, search_value: float) -> tuple | int:
+    lower_idx = bisect_left(df[column].values, search_value)
+    higher_idx = bisect_right(df[column].values, search_value)
+    if higher_idx == lower_idx:  # val is not in the list
+        return lower_idx - 1, lower_idx
+    else:  # val is in the list
+        return lower_idx
 
 
 def add_and_plot(df: pd.DataFrame, point_name="FootRight"):

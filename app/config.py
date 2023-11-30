@@ -1,5 +1,7 @@
 RAW_DATA_DIR = "..\\data\\raw\\raw"
 INTERIM_DATA_DIR = "..\\data\\interim"
+INTERIM_TIME_DATA_DIR = "..\\data\\interim_time"
+PROCESSED_DATA_DIR = "..\\data\\processed"
 USED_COLUMNS = [
     "Time",
     "KneeRight_x",
