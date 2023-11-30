@@ -31,7 +31,7 @@ for entry in os.scandir(data_directory):
         filepath,
         usecols=config.USED_COLUMNS,
     )
-    print(f'Loaded file: {filepath}')
+    print(f"Loaded file: {filepath}")
 
     # angle.add_and_plot(df)
     # point_floor_distance.add_and_plot(df, "HipRight")
