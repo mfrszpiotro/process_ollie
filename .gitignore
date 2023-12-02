@@ -1,3 +1,4 @@
+*.lnk
 *.xef
 env/
 

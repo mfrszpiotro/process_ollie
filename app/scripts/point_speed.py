@@ -14,10 +14,9 @@ def get_point_speed(
     return dist / time
 
 
-# RIGHT FOOT SPEED
-def add_and_plot(df: pd.DataFrame):
+def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
     df["foot_speed"] = get_point_speed(
-        df.FootRight_x, df.FootRight_y, df.FootRight_z, df.Time
+        df[f"{point_name}_x"], df[f"{point_name}_y"], df[f"{point_name}_z"], df.Time
     )
     df["foot_speed_smooth"] = signal.savgol_filter(
         df["foot_speed"], window_length=6, polyorder=3, mode="nearest"
