@@ -1,7 +1,9 @@
-from app.scripts import angle, point_floor_distance, point_speed, point_point_distance
-import app.config
+from app.ollie_grade.ollie import Ollie
+import app.config as cfg
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
 
+filepath = cfg.GOOD_OLLIE_TEST_FILE_PATH
+df = pd.read_csv(filepath)
+ollie = Ollie(df)
 print("Hello World!")
