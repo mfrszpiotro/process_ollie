@@ -12,7 +12,7 @@ class Event:
 
     def __init__(self, context: pd.Series, interest_column: str):
         self.context = context
-        self.time = context[0]
+        self.time = context.iloc[0]
         self.interest_column = interest_column
 
 

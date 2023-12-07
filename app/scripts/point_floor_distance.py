@@ -36,6 +36,13 @@ def save_strip_to_jump(
     df.to_csv(full_filepath, index=False)
 
 
+def find_max_distance(
+    df: pd.DataFrame,
+    jump_point_factor: str,
+) -> pd.Series:
+    return df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+
+
 def strip_to_jump_by_frames(
     df: pd.DataFrame,
     jump_point_factor="HipRight",
@@ -51,7 +58,7 @@ def strip_to_jump_by_frames(
         df.Floor_z,
         df.Floor_w,
     )
-    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    result = find_max_distance(df, jump_point_factor)
     max_index = result.name
     return df[max_index - left_dist : max_index + right_dist]
 
@@ -68,7 +75,7 @@ def strip_to_jump_by_time(
         df.Floor_z,
         df.Floor_w,
     )
-    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    result = find_max_distance(df, jump_point_factor)
     left_bound, right_bound = find_time_bounds_indexes(
         df, left_dist, right_dist, result["Time"]
     )
