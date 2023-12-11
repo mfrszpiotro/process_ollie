@@ -18,6 +18,7 @@ class Ollie:
     todo
     """
 
+    name: str
     context: pd.DataFrame
     prep: Preparing
     rise: Rising
@@ -26,24 +27,36 @@ class Ollie:
     front_foot: str
     front_hip: str
 
-    def __init__(self, jump: pd.DataFrame):
+    def __init__(self, jump: pd.DataFrame, name: str):
+        self.name = name
         self.context = strip_to_jump_by_time(jump)
         self.front_foot = "FootRight"
         self.front_hip = "HipRight"
         self.prep, self.rise, self.fall, self.land = self.__form_stages(
-            *Ollie.find_border_events(jump)
+            *Ollie.__find_border_events(jump)
         )
+
+    def __repr__(self):
+        return f"""
+        Ollie "{self.name}" conists of four stages:
+            - Preparation: {self.prep.stage_context.shape}
+            - Rising: {self.rise.stage_context.shape}
+            - Falling: {self.fall.stage_context.shape}
+            - Landing: {self.land.stage_context.shape}
+
+            Whole ollie shape: {self.context.shape}
+            """
 
     def __search_lift_off(self, top: TopHeight) -> LiftOff:
         point_of_interest = self.front_foot
-        lift_off_series = Ollie.search_min_floor_series(
+        lift_off_series = Ollie.__search_min_floor_series(
             self.context, 0.4, 0, top.time, point_of_interest
         )
         return LiftOff(lift_off_series, point_of_interest)
 
     def __search_landed(self, top: TopHeight) -> Landed:
         point_of_interest = self.front_foot
-        landed_series = Ollie.search_min_floor_series(
+        landed_series = Ollie.__search_min_floor_series(
             self.context, 0, 0.5, top.time, point_of_interest
         )
         return Landed(landed_series, point_of_interest)
@@ -60,7 +73,7 @@ class Ollie:
         return prep, rise, fall, land
 
     @staticmethod
-    def find_border_events(
+    def __find_border_events(
         jump: pd.DataFrame,
     ) -> (Empty, TopHeight, Empty):
         start_series = jump.iloc[0]
@@ -72,7 +85,8 @@ class Ollie:
         end = Empty(end_series)
         return (start, top_height, end)
 
-    def search_min_floor_series(
+    @staticmethod
+    def __search_min_floor_series(
         context: pd.DataFrame,
         time_from: float,
         time_to: float,

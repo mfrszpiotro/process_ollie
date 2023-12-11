@@ -5,5 +5,9 @@ import os
 
 filepath = cfg.OK_OLLIE_TEST_FILE_PATH
 df = pd.read_csv(filepath)
-ollie = Ollie(df)
-print("Hello World!")
+ollie_ok = Ollie(df, "okay")
+filepath = cfg.GOOD_OLLIE_TEST_FILE_PATH
+df = pd.read_csv(filepath)
+ollie_good = Ollie(df, "damn good")
+
+print(repr(ollie_good), repr(ollie_ok))
