@@ -40,7 +40,18 @@ def find_max_distance(
     df: pd.DataFrame,
     jump_point_factor: str,
 ) -> pd.Series:
-    return df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    max_index = df[f"{jump_point_factor}_floor_distance"].idxmax()
+    max_series = df.loc[max_index]
+    return max_series
+
+
+def find_min_distance(
+    df: pd.DataFrame,
+    jump_point_factor: str,
+) -> pd.Series:
+    min_index = df[f"{jump_point_factor}_floor_distance"].idxmin()
+    min_series = df.loc[min_index]
+    return min_series
 
 
 def strip_to_jump_by_frames(
@@ -105,7 +116,7 @@ def get_closests(df: pd.DataFrame, column: str, search_value: float) -> tuple | 
         return lower_idx
 
 
-def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
+def add(df: pd.DataFrame, point_name):
     df[f"{point_name}_floor_distance"] = get_point_distance_from_floor(
         df[f"{point_name}_x"],
         df[f"{point_name}_y"],
@@ -115,6 +126,10 @@ def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
         df.Floor_z,
         df.Floor_w,
     )
+
+
+def add_and_plot(df: pd.DataFrame, point_name):
+    add(df, point_name)
     df[f"{point_name}_floor_distance_smooth"] = signal.savgol_filter(
         df[f"{point_name}_floor_distance"],
         window_length=11,

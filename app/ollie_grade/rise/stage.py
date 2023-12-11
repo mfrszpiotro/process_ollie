@@ -11,8 +11,8 @@ class Rising(Stage):
 
     top_angle: TopAngle
 
-    def __init__(self, start: LiftOff, finish: TopHeight, context: pd.DataFrame):
-        super().__init__(context)
+    def __init__(self, start: LiftOff, finish: TopHeight, whole_context: pd.DataFrame):
+        super().__init__(start, finish, whole_context)
         self.start = start
         self.angle = self.find_top_angle_event()
         self.finish = finish

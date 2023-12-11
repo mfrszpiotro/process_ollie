@@ -8,5 +8,5 @@ class Preparing(Stage):
     todo
     """
 
-    def __init__(self, start: Empty, finish: LiftOff, context: pd.DataFrame):
-        super().__init__(start, finish, context)
+    def __init__(self, start: Empty, finish: LiftOff, whole_context: pd.DataFrame):
+        super().__init__(start, finish, whole_context)
