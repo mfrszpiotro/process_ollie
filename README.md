@@ -8,3 +8,13 @@ python -m venv env
 pip install -r requirements
 python plot_app.py
 ```
+
+## Process Ollie - Usage (Windows):
+```
+python processing_app.py
+```
+
+## Run tests:
+```
+python -m pytest
+```

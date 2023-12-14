@@ -11,9 +11,9 @@ class Empty(Event):
         super().__init__(context, None)
 
 
-class LiftOff(Event):
+class FrontLiftOff(Event):
     """
-    todo
+    Ollie event which indicates launch of the front foot into the air.
     """
 
     def __init__(self, context: Series, jump_point_factor):

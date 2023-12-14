@@ -14,9 +14,7 @@ import pandas as pd
 
 
 class Ollie:
-    """
-    todo
-    """
+    """Abstract definition of a skateboarding trick called "Ollie"."""
 
     name: str
     context: pd.DataFrame
@@ -38,23 +36,38 @@ class Ollie:
 
     def __repr__(self):
         return f"""
-        Ollie "{self.name}" conists of four stages:
-            - Preparation: {self.prep.stage_context.shape}
-            - Rising: {self.rise.stage_context.shape}
-            - Falling: {self.fall.stage_context.shape}
-            - Landing: {self.land.stage_context.shape}
+Ollie "{self.name}" conists of four stages:
+    - Preparation: {self.prep.stage_context.shape}
+    - Rising: {self.rise.stage_context.shape}
+    - Falling: {self.fall.stage_context.shape}
+    - Landing: {self.land.stage_context.shape}
+Whole ollie shape: {self.context.shape}
+"""
 
-            Whole ollie shape: {self.context.shape}
-            """
+    def __search_lift_off(self, top: TopHeight) -> FrontLiftOff:
+        """Search front foot lift off based on TopHeight event.
 
-    def __search_lift_off(self, top: TopHeight) -> LiftOff:
+        Args:
+            top (TopHeight): Top height record of the Ollie.
+
+        Returns:
+            FrontLiftOff: Event which indicates launch of the front foot into the air.
+        """
         point_of_interest = self.front_foot
         lift_off_series = Ollie.__search_min_floor_series(
             self.context, 0.4, 0, top.time, point_of_interest
         )
-        return LiftOff(lift_off_series, point_of_interest)
+        return FrontLiftOff(lift_off_series, point_of_interest)
 
     def __search_landed(self, top: TopHeight) -> Landed:
+        """Search landing event based on TopHeight event.
+
+        Args:
+            top (TopHeight): Top height record of the Ollie.
+
+        Returns:
+            Landed: Event which indicates landing on the ground after the jump.
+        """
         point_of_interest = self.front_foot
         landed_series = Ollie.__search_min_floor_series(
             self.context, 0, 0.5, top.time, point_of_interest
