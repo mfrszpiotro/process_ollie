@@ -33,6 +33,7 @@ class Ollie:
         self.prep, self.rise, self.fall, self.land = self.__form_stages(
             *Ollie.__find_border_events(jump)
         )
+        pass
 
     def __repr__(self):
         return f"""
@@ -112,3 +113,9 @@ Whole ollie shape: {self.context.shape}
         search_context = context[search_start:search_start_finish]
         add(search_context, search_column)
         return find_min_distance(search_context, search_column)
+
+    # def compare(self, to_compare) -> dict:
+    #     if isinstance(to_compare, Ollie):
+    #         comparator = Grade(self, to_compare)
+    #         return comparator.compare()
+    #     raise TypeError
