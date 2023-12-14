@@ -4,6 +4,8 @@ from scipy import signal
 from bisect import bisect_left, bisect_right
 import os
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 
 def get_point_distance_from_floor(
     colx: pd.Series,
@@ -36,6 +38,24 @@ def save_strip_to_jump(
     df.to_csv(full_filepath, index=False)
 
 
+def find_max_distance(
+    df: pd.DataFrame,
+    jump_point_factor: str,
+) -> pd.Series:
+    max_index = df[f"{jump_point_factor}_floor_distance"].idxmax()
+    max_series = df.loc[max_index]
+    return max_series
+
+
+def find_min_distance(
+    df: pd.DataFrame,
+    jump_point_factor: str,
+) -> pd.Series:
+    min_index = df[f"{jump_point_factor}_floor_distance"].idxmin()
+    min_series = df.loc[min_index]
+    return min_series
+
+
 def strip_to_jump_by_frames(
     df: pd.DataFrame,
     jump_point_factor="HipRight",
@@ -51,7 +71,7 @@ def strip_to_jump_by_frames(
         df.Floor_z,
         df.Floor_w,
     )
-    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    result = find_max_distance(df, jump_point_factor)
     max_index = result.name
     return df[max_index - left_dist : max_index + right_dist]
 
@@ -68,11 +88,10 @@ def strip_to_jump_by_time(
         df.Floor_z,
         df.Floor_w,
     )
-    result = df.loc[df[f"{jump_point_factor}_floor_distance"].idxmax()]
+    result = find_max_distance(df, jump_point_factor)
     left_bound, right_bound = find_time_bounds_indexes(
         df, left_dist, right_dist, result["Time"]
     )
-    print(f"Left index from time boundary: {left_bound}, Right one: {right_bound}")
     return df[left_bound:right_bound]
 
 
@@ -98,7 +117,7 @@ def get_closests(df: pd.DataFrame, column: str, search_value: float) -> tuple | 
         return lower_idx
 
 
-def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
+def add(df: pd.DataFrame, point_name):
     df[f"{point_name}_floor_distance"] = get_point_distance_from_floor(
         df[f"{point_name}_x"],
         df[f"{point_name}_y"],
@@ -108,6 +127,10 @@ def add_and_plot(df: pd.DataFrame, point_name="FootRight"):
         df.Floor_z,
         df.Floor_w,
     )
+
+
+def add_and_plot(df: pd.DataFrame, point_name):
+    add(df, point_name)
     df[f"{point_name}_floor_distance_smooth"] = signal.savgol_filter(
         df[f"{point_name}_floor_distance"],
         window_length=11,
