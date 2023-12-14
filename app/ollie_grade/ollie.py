@@ -1,9 +1,9 @@
-from app.ollie_grade.border_events import *
-from app.ollie_grade.prep.stage import Preparing
-from app.ollie_grade.rise.stage import Rising
-from app.ollie_grade.fall.stage import Falling
-from app.ollie_grade.land.stage import Landing
-from app.scripts.point_floor_distance import (
+from .border_events import *
+from .prep.stage import Preparing
+from .rise.stage import Rising
+from .fall.stage import Falling
+from .land.stage import Landing
+from ..scripts.point_floor_distance import (
     add,
     find_max_distance,
     find_min_distance,

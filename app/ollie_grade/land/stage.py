@@ -1,5 +1,5 @@
-from app.ollie_grade.utils import Stage
-from app.ollie_grade.border_events import Landed, Empty
+from ..utils import Stage
+from ..border_events import Empty, Landed
 import pandas as pd
 
 

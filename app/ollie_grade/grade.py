@@ -1,4 +1,4 @@
-from app.ollie_grade.ollie import Ollie
+from .ollie import Ollie
 
 
 class Grade:

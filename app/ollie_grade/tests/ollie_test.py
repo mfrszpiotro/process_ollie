@@ -1,5 +1,5 @@
-from app.ollie_grade.ollie import Ollie
-import app.ollie_grade.tests.config as cfg
+from ..ollie import Ollie
+from . import config as cfg
 import pandas as pd
 import pytest
 

@@ -1,5 +1,5 @@
-from app.ollie_grade.utils import Stage
-from app.ollie_grade.border_events import Empty, FrontLiftOff
+from ..utils import Stage
+from ..border_events import Empty, FrontLiftOff
 import pandas as pd
 
 
