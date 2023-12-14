@@ -4,6 +4,8 @@ from scipy import signal
 from bisect import bisect_left, bisect_right
 import os
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 
 def get_point_distance_from_floor(
     colx: pd.Series,
@@ -90,7 +92,6 @@ def strip_to_jump_by_time(
     left_bound, right_bound = find_time_bounds_indexes(
         df, left_dist, right_dist, result["Time"]
     )
-    print(f"Left index from time boundary: {left_bound}, Right one: {right_bound}")
     return df[left_bound:right_bound]
 
 
