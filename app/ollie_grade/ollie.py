@@ -1,4 +1,5 @@
 from .border_events import *
+from .rise.events import *
 from .prep.stage import Preparing
 from .rise.stage import Rising
 from .fall.stage import Falling
@@ -22,13 +23,13 @@ class Ollie:
     rise: Rising
     fall: Falling
     land: Landing
-    front_foot: str
+    front_ankle: str
     front_hip: str
 
     def __init__(self, jump: pd.DataFrame, name: str):
         self.name = name
         self.context = strip_to_jump_by_time(jump)
-        self.front_foot = "FootRight"
+        self.front_ankle = "AnkleRight"
         self.front_hip = "HipRight"
         self.prep, self.rise, self.fall, self.land = self.__form_stages(
             *Ollie.__find_border_events(jump)
@@ -54,7 +55,7 @@ Whole ollie shape: {self.context.shape}
         Returns:
             FrontLiftOff: Event which indicates launch of the front foot into the air.
         """
-        point_of_interest = self.front_foot
+        point_of_interest = self.front_ankle
         lift_off_series = Ollie.__search_min_floor_series(
             self.context, 0.4, 0, top.time, point_of_interest
         )
@@ -69,7 +70,7 @@ Whole ollie shape: {self.context.shape}
         Returns:
             Landed: Event which indicates landing on the ground after the jump.
         """
-        point_of_interest = self.front_foot
+        point_of_interest = self.front_ankle
         landed_series = Ollie.__search_min_floor_series(
             self.context, 0, 0.5, top.time, point_of_interest
         )
@@ -114,6 +115,25 @@ Whole ollie shape: {self.context.shape}
         add(search_context, search_column)
         return find_min_distance(search_context, search_column)
 
+    def get_unique_event(self, event_type: type) -> Event:
+        found_event = None
+        if event_type == FrontLiftOff:
+            found_event = self.rise.start
+        elif event_type == TopHeight:
+            found_event = self.rise.finish
+        elif event_type == Landed:
+            found_event = self.fall.finish
+        elif event_type == BackLiftOff:
+            found_event = self.rise.back_lift_off
+        elif event_type == TopAngle:
+            found_event = self.rise.top_angle
+        else:
+            raise NotImplementedError(
+                "One of the events were not found or initialized."
+            )
+        return found_event
+
+    # todo
     # def compare(self, to_compare) -> dict:
     #     if isinstance(to_compare, Ollie):
     #         comparator = Grade(self, to_compare)
