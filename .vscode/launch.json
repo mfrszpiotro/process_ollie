@@ -5,10 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Module",
+            "name": "processing",
             "type": "python",
             "request": "launch",
             "module": "processing_app",
+            "justMyCode": true
+        },
+        {
+            "name": "plotting",
+            "type": "python",
+            "request": "launch",
+            "module": "plot_app",
             "justMyCode": true
         }
     ]
