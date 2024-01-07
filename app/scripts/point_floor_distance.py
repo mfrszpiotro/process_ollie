@@ -117,7 +117,7 @@ def get_closests(df: pd.DataFrame, column: str, search_value: float) -> tuple | 
         return lower_idx
 
 
-def add(df: pd.DataFrame, point_name):
+def add(df: pd.DataFrame, point_name: str):
     df[f"{point_name}_floor_distance"] = get_point_distance_from_floor(
         df[f"{point_name}_x"],
         df[f"{point_name}_y"],
@@ -129,7 +129,7 @@ def add(df: pd.DataFrame, point_name):
     )
 
 
-def add_and_plot(df: pd.DataFrame, point_name):
+def add_and_plot(df: pd.DataFrame, point_name: str):
     add(df, point_name)
     df[f"{point_name}_floor_distance_smooth"] = signal.savgol_filter(
         df[f"{point_name}_floor_distance"],

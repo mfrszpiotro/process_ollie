@@ -17,7 +17,7 @@ def get_point_point_distance(
     return np.sqrt(squared_dist)
 
 
-def add_and_plot(df: pd.DataFrame, point_name_a="FootLeft", point_name_b="FootRight"):
+def add_and_plot(df: pd.DataFrame, point_name_a: str, point_name_b: str):
     df[f"{point_name_a}_{point_name_b}_distance"] = get_point_point_distance(
         df[f"{point_name_a}_x"],
         df[f"{point_name_a}_y"],
