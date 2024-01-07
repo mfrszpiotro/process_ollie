@@ -141,7 +141,7 @@ def add_and_plot(df: pd.DataFrame, point_name: str):
         kind="line",
         x="Time",
         y=f"{point_name}_floor_distance_smooth",
-        label=f"Smoothened {point_name}-floor distance [unit]",
+        label=f"Smoothed {point_name}-floor distance [unit]",
     )
     df.plot(
         kind="line",

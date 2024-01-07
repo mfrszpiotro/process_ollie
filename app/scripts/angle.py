@@ -70,7 +70,7 @@ def add_and_plot(df: pd.DataFrame):
         kind="line",
         x="Time",
         y="crotch_angle_smooth",
-        label="Smoothened crotch angle [deg]",
+        label="Smoothed crotch angle [deg]",
     )
     df.plot(
         kind="line",

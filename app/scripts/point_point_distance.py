@@ -36,7 +36,7 @@ def add_and_plot(df: pd.DataFrame, point_name_a: str, point_name_b: str):
         kind="line",
         x="Time",
         y=f"{point_name_a}_{point_name_b}_distance_smooth",
-        label=f"Smoothened {point_name_a}-{point_name_b} distance [unit]",
+        label=f"Smoothed {point_name_a}-{point_name_b} distance [unit]",
     )
     df.plot(
         kind="line",

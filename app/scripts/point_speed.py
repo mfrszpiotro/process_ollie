@@ -25,7 +25,7 @@ def add_and_plot(df: pd.DataFrame, point_name: str):
         kind="line",
         x="Time",
         y=f"{point_name}_speed_smooth",
-        label="Smoothened foot speed [unit/s]",
+        label="Smoothed foot speed [unit/s]",
     )
     df.plot(
         kind="line",
