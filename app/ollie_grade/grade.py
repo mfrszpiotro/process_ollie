@@ -1,6 +1,5 @@
 from .ollie import Ollie
-from .utils import Event
-from .border_events import *
+from .event import *
 
 
 class Grade:
@@ -25,10 +24,12 @@ class Grade:
         ref_event_b = self.reference.get_unique_event(event_b_type)
         com_diff = com_event_a.time - com_event_b.time
         ref_diff = ref_event_a.time - ref_event_b.time
+        how_close = com_diff - ref_diff
         return {
-            self.commit.name: com_diff,
-            self.reference.name: ref_diff,
-            "time_diff": com_diff - ref_diff,
+            self.commit.name: round(com_diff, 3),
+            self.reference.name: round(ref_diff, 3),
+            "how_close": abs(round(how_close, 3)),
+            "how_close_%": abs(round(100 * (how_close) / ref_diff, 3)),
         }
 
     def compare(self) -> list[dict]:
