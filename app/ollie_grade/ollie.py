@@ -1,4 +1,4 @@
-from .border_events import *
+from .event import *
 from .rise.events import *
 from .prep.stage import Preparing
 from .rise.stage import Rising
@@ -32,7 +32,7 @@ class Ollie:
         self.front_ankle = "AnkleRight"
         self.front_hip = "HipRight"
         self.prep, self.rise, self.fall, self.land = self.__form_stages(
-            *Ollie.__find_border_events(jump)
+            *Ollie.__find_basic_events(jump)
         )
         pass
 
@@ -88,7 +88,7 @@ Whole ollie shape: {self.context.shape}
         return prep, rise, fall, land
 
     @staticmethod
-    def __find_border_events(
+    def __find_basic_events(
         jump: pd.DataFrame,
     ) -> (Empty, TopHeight, Empty):
         start_series = jump.iloc[0]
@@ -107,7 +107,19 @@ Whole ollie shape: {self.context.shape}
         time_to: float,
         reference_time: float,
         search_column: str,
-    ):
+    ) -> pd.Series:
+        """A method to extract a minimal point-floor distance from the specified search interval.
+
+        Args:
+            context (pd.DataFrame): _description_
+            time_from (float): Time distance before the reference time.
+            time_to (float): Time distance after the reference time.
+            reference_time (float): Time instant from which time_from difference and time_to difference apply - altogether it creates a search interval.
+            search_column (str): A point to get the minimal distance from the floor
+
+        Returns:
+            pd.Series: A point with a minimal distance to the floor.
+        """
         search_start, search_start_finish = find_time_bounds_indexes(
             context, time_from, time_to, ref_time=reference_time
         )
