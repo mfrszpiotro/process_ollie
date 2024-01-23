@@ -1,19 +1,5 @@
 import pandas as pd
-
-
-class Event:
-    """
-    todo
-    """
-
-    context: pd.Series
-    time: float
-    interest_column: str
-
-    def __init__(self, context: pd.Series, interest_column: str):
-        self.context = context
-        self.time = context.loc["Time"]
-        self.interest_column = interest_column
+from .event import Empty
 
 
 class Stage:
@@ -24,7 +10,7 @@ class Stage:
     whole_context: pd.DataFrame
     stage_context: pd.DataFrame
 
-    def __init__(self, start: Event, finish: Event, whole_context: pd.DataFrame):
+    def __init__(self, start: Empty, finish: Empty, whole_context: pd.DataFrame):
         self.start = start
         self.finish = finish
         self.whole_context = whole_context

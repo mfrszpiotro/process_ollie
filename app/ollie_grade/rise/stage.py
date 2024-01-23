@@ -1,5 +1,5 @@
-from ..utils import Stage
-from ..border_events import FrontLiftOff, TopHeight
+from ..stage import Stage
+from ..event import FrontLiftOff, TopHeight
 from ..rise.events import TopAngle, BackLiftOff
 import pandas as pd
 

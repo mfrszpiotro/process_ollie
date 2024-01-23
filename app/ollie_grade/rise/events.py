@@ -1,4 +1,4 @@
-from ..utils import Event
+from ..stage import Event
 from pandas import Series
 
 
