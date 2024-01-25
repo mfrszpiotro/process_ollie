@@ -1,5 +1,5 @@
 from .ollie import Ollie
-from .event import *
+from .events import *
 
 
 class Grade:
