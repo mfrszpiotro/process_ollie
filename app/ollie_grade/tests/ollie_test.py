@@ -1,7 +1,10 @@
-from app.ollie_grade.ollie import Ollie
-import app.ollie_grade.tests.config as cfg
+from ..ollie import Ollie
+from . import config as cfg
 import pandas as pd
 import pytest
+
+# todo - currently not working due to imports
+# ImportError: attempted relative import with no known parent package
 
 
 @pytest.mark.parametrize(
