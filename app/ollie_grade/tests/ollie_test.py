@@ -3,6 +3,9 @@ from . import config as cfg
 import pandas as pd
 import pytest
 
+# todo - currently not working due to imports
+# ImportError: attempted relative import with no known parent package
+
 
 @pytest.mark.parametrize(
     "filepath, expected_result",

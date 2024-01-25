@@ -14,7 +14,7 @@ python plot_app.py
 python processing_app.py
 ```
 
-## Run tests:
+## Run tests (currently not working - todo):
 ```
 python -m pytest
 ```
