@@ -34,9 +34,9 @@ for entry in os.scandir(data_directory):
     print(f"Loaded file: {filepath}")
 
     angle.add_and_plot(df)
-    point_floor_distance.add_and_plot(df, "AnkleRight")
-    point_speed.add_and_plot(df, "AnkleRight")
-    point_point_distance.add_and_plot(df, "AnkleLeft", "AnkleRight")
+    # point_floor_distance.add_and_plot(df, "AnkleRight")
+    # point_speed.add_and_plot(df, "AnkleRight")
+    # point_point_distance.add_and_plot(df, "AnkleLeft", "AnkleRight")
     # point_floor_distance.save_strip_to_jump(df, config.INTERIM_TIME_DATA_DIR, selected_subfolder, entry.name)
 
     plt.show(block=False)
