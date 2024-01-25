@@ -4,6 +4,7 @@ from ..scripts.point_floor_distance import (
     find_max_distance,
     strip_to_jump_by_time,
 )
+from ..scripts.angle import add as add_angle_columns
 import pandas as pd
 
 
@@ -21,6 +22,7 @@ class Ollie:
     def __init__(self, jump: pd.DataFrame, name: str, is_goofy: bool):
         self.name = name
         self.context = strip_to_jump_by_time(jump)
+        self.context = add_angle_columns(self.context)
         jump_start, jump_top_height, jump_finish = Ollie.__find_basic_events(
             jump, is_goofy
         )

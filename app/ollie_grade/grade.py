@@ -1,5 +1,11 @@
 from .ollie import Ollie
 from .events import *
+from .stages import *
+
+## Find the best match with the canonical recursion formula
+from dtw import *
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Grade:
@@ -32,8 +38,42 @@ class Grade:
             "how_close_%": abs(round(100 * (how_close) / ref_diff, 3)),
         }
 
+    # todo get stage based on type?
+    def __compare_dtw_diff(self, column_of_interest="crotch_angle_smooth"):
+        query = self.commit.rise.stage_context[column_of_interest].to_numpy()
+        template = self.reference.rise.stage_context[column_of_interest].to_numpy()
+        alignment = dtw(query, template, keep_internals=True)
+
+        ## Display the warping curve, i.e. the alignment curve
+        # alignment.plot(type="threeway")
+
+        ## Align and plot with the Rabiner-Juang type VI-c unsmoothed recursion
+        output_dtw = dtw(
+            query,
+            template,
+            keep_internals=True,
+            step_pattern=rabinerJuangStepPattern(6, "c"),
+        )
+
+        output_dtw.plot(type="twoway")
+
+        from ..scripts.point_floor_distance import add_and_plot as floor_plot
+        from ..scripts.angle import add_and_plot as angle_plot
+
+        angle_plot(self.commit.context)
+        angle_plot(self.reference.context)
+
+        ## See the recursion relation, as formula and diagram
+        # print(rabinerJuangStepPattern(6, "c"))
+        # rabinerJuangStepPattern(6, "c").plot()
+        plt.show()
+        pass
+
     def compare(self) -> list[dict]:
         results = []
-        example_diff = self.__compare_events_time_diff(FrontLiftOff, TopHeight)
-        results.append(example_diff)
+        example_event_time_diff = self.__compare_events_time_diff(
+            FrontLiftOff, TopHeight
+        )
+        results.append(example_event_time_diff)
+        self.__compare_dtw_diff()
         return results
