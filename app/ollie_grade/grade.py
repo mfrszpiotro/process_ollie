@@ -32,6 +32,7 @@ class Grade:
         ref_diff = ref_event_a.time - ref_event_b.time
         how_close = com_diff - ref_diff
         return {
+            "scenario_name": f"{event_a_type.__name__}&{event_b_type.__name__}",
             self.commit.name: round(com_diff, 3),
             self.reference.name: round(ref_diff, 3),
             "how_close": abs(round(how_close, 3)),
@@ -71,9 +72,8 @@ class Grade:
 
     def compare(self) -> list[dict]:
         results = []
-        example_event_time_diff = self.__compare_events_time_diff(
-            FrontLiftOff, TopHeight
-        )
-        results.append(example_event_time_diff)
+        results.append(self.__compare_events_time_diff(TopHeight, FrontLiftOff))
+        results.append(self.__compare_events_time_diff(BackLiftOff, FrontLiftOff))
+        results.append(self.__compare_events_time_diff(TopHeight, TopAngle))
         self.__compare_dtw_diff()
         return results

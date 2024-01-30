@@ -75,7 +75,8 @@ class FrontLiftOff(Event):
 
 class TopAngle(Event):
     """
-    todo
+    The largest skater's crotch stretch (angle between legs). It can be considered
+    as a point where our skater has slided his foot to level-up the skateboard when performing Ollie.
     """
 
     def __init__(self, context: Series, interest_column=PointsOfInterest.CROTCH_ANGLE):

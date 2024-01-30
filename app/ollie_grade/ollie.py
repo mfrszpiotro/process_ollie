@@ -4,7 +4,7 @@ from ..scripts.point_floor_distance import (
     find_max_distance,
     strip_to_jump_by_time,
 )
-from ..scripts.angle import add as add_angle_columns
+from ..scripts.angle import _add as add_angle_columns
 import pandas as pd
 
 

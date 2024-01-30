@@ -1,6 +1,7 @@
 import pandas as pd
 from .events import *
-from ..scripts.point_floor_distance import search_min_floor_series
+from ..scripts.point_floor_distance import search_min_floor_point
+from ..scripts.angle import search_max_angle_point
 
 
 class Stage:
@@ -49,16 +50,18 @@ class Preparing(Stage):
     def __search_lift_off(
         whole_context: pd.DataFrame, top: TopHeight, is_goofy: bool
     ) -> FrontLiftOff:
-        """Search front foot lift off based on TopHeight event.
+        """Search front foot lift off based on TopHeight event temporal position.
 
         Args:
+            whole_context (pd.DataFrame): The Ollie jump performance recording.
             top (TopHeight): Top height record of the Ollie.
+            is_goofy (bool): Stance of the skater (goofy = right foot in front of the riding direction).
 
         Returns:
             FrontLiftOff: Event which indicates launch of the front foot into the air.
         """
         point_of_interest = FrontLiftOff.get_point_of_interest(is_goofy)
-        lift_off_point = search_min_floor_series(
+        lift_off_point = search_min_floor_point(
             whole_context, 0.4, 0, top.time, point_of_interest
         )
         return FrontLiftOff(lift_off_point, is_goofy)
@@ -80,20 +83,46 @@ class Rising(Stage):
         is_goofy: bool,
     ):
         super().__init__(whole_context, start, jump_top_height)
-        self.back_lift_off = self.__find_back_lift_off_event()
-        self.top_angle = self.__find_top_angle_event()
+        self.back_lift_off = Rising.__search_lift_off(
+            whole_context, jump_top_height, is_goofy
+        )
+        self.top_angle = Rising.__search_top_angle(whole_context, jump_top_height)
 
-    def __find_back_lift_off_event(self):
-        """
-        todo
-        """
-        pass
+    @staticmethod
+    def __search_lift_off(
+        whole_context: pd.DataFrame, top: TopHeight, is_goofy: bool
+    ) -> BackLiftOff:
+        """Search back foot lift off based on TopHeight event temporal position.
 
-    def __find_top_angle_event(self):
+        Args:
+            whole_context (pd.DataFrame): The Ollie jump performance recording.
+            top (TopHeight): Top height record of the Ollie.
+            is_goofy (bool): Stance of the skater (goofy = right foot in front of the riding direction).
+
+        Returns:
+            BackLiftOff: Event which indicates launch of the back foot into the air.
         """
-        todo
+        point_of_interest = BackLiftOff.get_point_of_interest(is_goofy)
+        lift_off_point = search_min_floor_point(
+            whole_context, 0.4, 0, top.time, point_of_interest
+        )
+        return BackLiftOff(lift_off_point, is_goofy)
+
+    @staticmethod
+    def __search_top_angle(whole_context: pd.DataFrame, top: TopHeight) -> TopAngle:
+        """Search the largest skater's crotch stretch (angle between legs) based on TopHeight event temporal position.
+        It can be considered as a point where our skater has slided his foot to level-up the skateboard when performing the Ollie.
+
+        Args:
+            whole_context (pd.DataFrame): The Ollie jump performance recording.
+            top (TopHeight): Top height record of the Ollie.
+
+        Returns:
+            TopAngle: Event which indicates the moment of largest skater's crotch stretch.
         """
-        pass
+        point_of_interest = TopAngle
+        top_angle_point = search_max_angle_point(whole_context, 0.3, 0.3, top.time)
+        return TopAngle(top_angle_point)
 
 
 class Falling(Stage):
@@ -123,7 +152,7 @@ class Falling(Stage):
             Landed: Event which indicates landing on the ground after the jump.
         """
         point_of_interest = Landed.get_point_of_interest(is_goofy)
-        landed_point = search_min_floor_series(
+        landed_point = search_min_floor_point(
             whole_context, 0, 0.5, top.time, point_of_interest
         )
         return Landed(landed_point, is_goofy)

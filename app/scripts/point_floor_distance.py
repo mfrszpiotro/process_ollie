@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from scipy import signal
-from bisect import bisect_left, bisect_right
 import os
+from .bounds_by_time import find_time_bounds_indexes
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -131,7 +131,7 @@ def find_min_distance(
     return min_series
 
 
-def search_min_floor_series(
+def search_min_floor_point(
     context: pd.DataFrame,
     time_from: float,
     time_to: float,
@@ -156,25 +156,3 @@ def search_min_floor_series(
     search_context = context[search_start:search_start_finish]
     _add(search_context, search_column)
     return find_min_distance(search_context, search_column)
-
-
-def find_time_bounds_indexes(
-    df: pd.DataFrame, left_seconds: float, right_seconds: float, ref_time: float
-) -> (int, int):
-    column_name = "Time"
-    left_bound = get_closests(df, column_name, ref_time - left_seconds)
-    right_bound = get_closests(df, column_name, ref_time + right_seconds)
-    if isinstance(left_bound, tuple):
-        left_bound = left_bound[0]
-    if isinstance(right_bound, tuple):
-        right_bound = right_bound[1]
-    return left_bound, right_bound
-
-
-def get_closests(df: pd.DataFrame, column: str, search_value: float) -> tuple | int:
-    lower_idx = bisect_left(df[column].values, search_value)
-    higher_idx = bisect_right(df[column].values, search_value)
-    if higher_idx == lower_idx:  # val is not in the list
-        return lower_idx - 1, lower_idx
-    else:  # val is in the list
-        return lower_idx

@@ -2,6 +2,7 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from scipy import signal
+from .bounds_by_time import find_time_bounds_indexes
 
 
 def _angle_between(v1: npt.ArrayLike, v2: npt.ArrayLike) -> float:
@@ -59,7 +60,7 @@ def _get_angle(ptA: pd.Series, ptB: pd.Series, ptC: pd.Series, ptD: pd.Series) -
     return _angle_between(v1, v2) * 180 / np.pi
 
 
-def add(df: pd.DataFrame):
+def _add(df: pd.DataFrame):
     df["crotch_angle"] = df.apply(
         lambda row: _get_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1
     )
@@ -70,12 +71,7 @@ def add(df: pd.DataFrame):
 
 
 def add_and_plot(df: pd.DataFrame):
-    df["crotch_angle"] = df.apply(
-        lambda row: _get_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1
-    )
-    df["crotch_angle_smooth"] = signal.savgol_filter(
-        df["crotch_angle"], window_length=11, polyorder=3, mode="nearest"
-    )
+    _add(df)
     ax_crotch = df.plot(
         kind="line",
         x="Time",
@@ -90,3 +86,23 @@ def add_and_plot(df: pd.DataFrame):
         title="Crotch angle over time while performing Ollie",
         ax=ax_crotch,
     )
+
+
+def _get_max_angle(df: pd.DataFrame) -> pd.Series:
+    min_index = df[f"crotch_angle"].idxmax()
+    min_series = df.loc[min_index]
+    return min_series
+
+
+def search_max_angle_point(
+    context: pd.DataFrame,
+    time_from: float,
+    time_to: float,
+    reference_time: float,
+) -> pd.Series:
+    search_start, search_start_finish = find_time_bounds_indexes(
+        context, time_from, time_to, ref_time=reference_time
+    )
+    search_context = context[search_start:search_start_finish]
+    _add(search_context)
+    return _get_max_angle(search_context)
