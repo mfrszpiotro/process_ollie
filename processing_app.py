@@ -4,11 +4,9 @@ import app.ollie_grade.tests.config as test_cfg
 import pandas as pd
 import json
 
-filepath = test_cfg.OK_OLLIE_TEST_FILE_PATH
-df = pd.read_csv(filepath)
+df = pd.read_csv(test_cfg.OK_OLLIE_TEST_FILE_PATH)
 ollie_almost = Ollie(df, "almost-good", is_goofy=True)
-filepath = test_cfg.GOOD_OLLIE_TEST_FILE_PATH
-df = pd.read_csv(filepath)
+df = pd.read_csv(test_cfg.GOOD_OLLIE_TEST_FILE_PATH)
 ollie_good = Ollie(df, "good", is_goofy=True)
 
 print(repr(ollie_good), repr(ollie_almost))
