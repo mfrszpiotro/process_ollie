@@ -73,9 +73,25 @@ Whole ollie shape: {self.context.shape}
             found_event = self.rise.top_angle
         else:
             raise NotImplementedError(
-                "One of the events were not found or initialized."
+                f"The event {event_type.__name__}  were not found or initialized."
             )
         return found_event
+
+    def get_unique_stage(self, stage_type: type) -> Stage:
+        found_stage = None
+        if stage_type == Preparing:
+            found_stage = self.prep
+        elif stage_type == Rising:
+            found_stage = self.rise
+        elif stage_type == Falling:
+            found_stage = self.fall
+        elif stage_type == Landing:
+            found_stage = self.land
+        else:
+            raise NotImplementedError(
+                f"The stage {stage_type.__name__} were not found or initialized."
+            )
+        return found_stage
 
     # todo
     # def compare(self, to_compare) -> dict:

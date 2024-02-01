@@ -2,9 +2,7 @@ from .ollie import Ollie
 from .events import *
 from .stages import *
 from pydantic import BaseModel
-
-## Find the best match with the canonical recursion formula
-from dtw import *
+from dtw import DTW, dtw, rabinerJuangStepPattern
 import matplotlib.pyplot as plt
 
 
@@ -28,12 +26,26 @@ and in which direction the next commit should be taken.
 """
 
 
+class DynamicTimeWarp(BaseModel):
+    diff_name: str
+    stage: str
+    column_name: str
+    commit_length: int
+    reference_length: int
+    total_distance: float
+    normalized_distance: float
+    html_plot: str | None = None
+    diff_description: str = """Dynamic Time Warp applied for two time series from given column within a given stage.
+The html_plot gives a visual comparison representation between series."""
+
+
 class Grade:
     """Comparing class for two Ollie objects which is used to gain useful comparison results."""
 
     commit: Ollie
     reference: Ollie
-    time_two_events_scenarios: dict[tuple]
+    time_two_events_scenarios: list[tuple]
+    dynamic_time_warp_scenarios: list[tuple]
 
     def __init__(self, commit: Ollie, reference: Ollie) -> None:
         self.commit = commit
@@ -42,6 +54,10 @@ class Grade:
             (TopHeight, FrontLiftOff),
             (BackLiftOff, FrontLiftOff),
             (TopHeight, TopAngle),
+        ]
+        self.dynamic_time_warp_scenarios = [
+            (Rising, "crotch_angle_smooth"),
+            (Falling, "crotch_angle_smooth"),
         ]
         pass
 
@@ -68,14 +84,16 @@ class Grade:
             ),
         )
 
-    # todo get stage based on type?
-    def __compare_dtw_diff(self, column_of_interest="crotch_angle_smooth"):
-        query = self.commit.rise.stage_context[column_of_interest].to_numpy()
-        template = self.reference.rise.stage_context[column_of_interest].to_numpy()
-        alignment = dtw(query, template, keep_internals=True)
+    def __get_dynamic_time_warp_diff(self, stage_type: type, column_of_interest: str):
+        # Get the data from the stage and the column
+        stage_commit = self.commit.get_unique_stage(stage_type)
+        stage_reference = self.reference.get_unique_stage(stage_type)
+        query = stage_commit.stage_context[column_of_interest].to_numpy()
+        template = stage_reference.stage_context[column_of_interest].to_numpy()
 
         ## Display the warping curve, i.e. the alignment curve
-        # alignment.plot(type="threeway")
+        alignment = dtw(query, template, keep_internals=True)
+        alignment.plot(type="threeway")
 
         ## Align and plot with the Rabiner-Juang type VI-c unsmoothed recursion
         output_dtw = dtw(
@@ -87,21 +105,27 @@ class Grade:
 
         output_dtw.plot(type="twoway")
 
-        from ..scripts.point_floor_distance import add_and_plot as floor_plot
-        from ..scripts.angle import add_and_plot as angle_plot
-
-        angle_plot(self.commit.context)
-        angle_plot(self.reference.context)
-
         ## See the recursion relation, as formula and diagram
         # print(rabinerJuangStepPattern(6, "c"))
         # rabinerJuangStepPattern(6, "c").plot()
+
         plt.show()
-        pass
+
+        return DynamicTimeWarp(
+            diff_name=DynamicTimeWarp.__name__,
+            stage=stage_type.__name__,
+            column_name=column_of_interest,
+            commit_length=output_dtw.M,
+            reference_length=output_dtw.N,
+            total_distance=output_dtw.distance,
+            normalized_distance=output_dtw.normalizedDistance,
+            # html_plot with mlpd3
+        )
 
     def compare(self) -> list:
         results = []
-        # self.__compare_dtw_diff()
         for scenario in self.time_two_events_scenarios:
             results.append(self.__get_time_two_events_diff(*scenario))
+        for scenario in self.dynamic_time_warp_scenarios:
+            results.append(self.__get_dynamic_time_warp_diff(*scenario))
         return results
