@@ -1,33 +1,31 @@
 from .ollie import Ollie
 from .events import *
 from .stages import *
-from enum import Enum
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 ## Find the best match with the canonical recursion formula
 from dtw import *
 import matplotlib.pyplot as plt
 
 
-@dataclass
-class TimeTwoEvents:
+class HowClose(BaseModel):
+    absolute: float
+    absolute_percent: float
+    is_negative: bool
+    context: str = "commit_time_diff - reference_time_diff"
+
+
+class TimeTwoEvents(BaseModel):
     diff_name: str
     event_a_name: str
     event_b_name: str
     time_diff_commit: float
     time_diff_reference: float
-    how_close: any
+    how_close: HowClose
     diff_description: str = """A time difference between two events is calculated for each Ollie performance (commit and reference). 
 Then those time differences are compared to determine how close the both intervals are, 
 and in which direction the next commit should be taken.
 """
-
-    @dataclass
-    class HowClose:
-        absolute: float
-        absolute_percent: float
-        is_negative: bool
-        context: str = "commit_diff - reference_diff"
 
 
 class Grade:
@@ -35,11 +33,16 @@ class Grade:
 
     commit: Ollie
     reference: Ollie
-    time_two_events_scenarios: dict
+    time_two_events_scenarios: dict[tuple]
 
     def __init__(self, commit: Ollie, reference: Ollie) -> None:
         self.commit = commit
         self.reference = reference
+        self.time_two_events_scenarios = [
+            (TopHeight, FrontLiftOff),
+            (BackLiftOff, FrontLiftOff),
+            (TopHeight, TopAngle),
+        ]
         pass
 
     def __get_time_two_events_diff(  # todo as init of a TimeTwoClass?
@@ -53,18 +56,16 @@ class Grade:
         ref_diff = ref_event_a.time - ref_event_b.time
         how_close = com_diff - ref_diff
         return TimeTwoEvents(
-            TimeTwoEvents.__name__,
-            event_a_type.__name__,
-            event_b_type.__name__,
-            round(com_diff, 3),
-            round(ref_diff, 3),
-            TimeTwoEvents.HowClose(
-                abs(round(how_close, 3)),
-                abs(round(100 * (how_close) / ref_diff, 3))
-                if ref_diff != 0
-                else "Reference events times are equal (difference is 0).",
-                bool(how_close < 0),
-            ).__dict__,
+            diff_name=TimeTwoEvents.__name__,
+            event_a_name=event_a_type.__name__,
+            event_b_name=event_b_type.__name__,
+            time_diff_commit=round(com_diff, 3),
+            time_diff_reference=round(ref_diff, 3),
+            how_close=HowClose(
+                absolute=abs(round(how_close, 3)),
+                absolute_percent=abs(round(100 * (how_close) / ref_diff, 3)),
+                is_negative=bool(how_close < 0),
+            ),
         )
 
     # todo get stage based on type?
@@ -98,14 +99,9 @@ class Grade:
         plt.show()
         pass
 
-    def compare(self) -> list[dict]:
+    def compare(self) -> list:
         results = []
-        results.append(
-            self.__get_time_two_events_diff(TopHeight, FrontLiftOff).__dict__
-        )
-        results.append(
-            self.__get_time_two_events_diff(BackLiftOff, FrontLiftOff).__dict__
-        )
-        results.append(self.__get_time_two_events_diff(TopHeight, TopAngle).__dict__)
-        self.__compare_dtw_diff()
+        # self.__compare_dtw_diff()
+        for scenario in self.time_two_events_scenarios:
+            results.append(self.__get_time_two_events_diff(*scenario))
         return results
