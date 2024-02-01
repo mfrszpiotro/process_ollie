@@ -3,7 +3,7 @@ from .events import *
 from .stages import *
 from pydantic import BaseModel
 from dtw import DTW, dtw, rabinerJuangStepPattern
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt, mpld3
 
 
 class HowClose(BaseModel):
@@ -103,13 +103,12 @@ class Grade:
             step_pattern=rabinerJuangStepPattern(6, "c"),
         )
 
-        output_dtw.plot(type="twoway")
-
         ## See the recursion relation, as formula and diagram
         # print(rabinerJuangStepPattern(6, "c"))
         # rabinerJuangStepPattern(6, "c").plot()
 
-        plt.show()
+        axes = output_dtw.plot(type="twoway")
+        mpld3.save_html(axes.get_figure(), "test.html")
 
         return DynamicTimeWarp(
             diff_name=DynamicTimeWarp.__name__,
@@ -119,7 +118,7 @@ class Grade:
             reference_length=output_dtw.N,
             total_distance=output_dtw.distance,
             normalized_distance=output_dtw.normalizedDistance,
-            # html_plot with mlpd3
+            html_plot=mpld3.fig_to_html(axes.get_figure()),
         )
 
     def compare(self) -> list:
