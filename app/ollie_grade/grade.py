@@ -3,12 +3,13 @@ from .events import *
 from .stages import *
 from pydantic import BaseModel
 from dtw import DTW, dtw, rabinerJuangStepPattern
+from datetime import datetime
 import matplotlib.pyplot as plt, mpld3
 
 
 class HowClose(BaseModel):
     absolute: float
-    absolute_percent: float
+    absolute_percent: float | None
     is_negative: bool
     context: str = "commit_time_diff - reference_time_diff"
 
@@ -61,7 +62,7 @@ class Grade:
         ]
         pass
 
-    def __get_time_two_events_diff(  # todo as init of a TimeTwoClass?
+    def __get_time_two_events_diff(
         self, event_a_type: type, event_b_type: type
     ) -> TimeTwoEvents:
         com_event_a = self.commit.get_unique_event(event_a_type)
@@ -79,7 +80,11 @@ class Grade:
             time_diff_reference=round(ref_diff, 3),
             how_close=HowClose(
                 absolute=abs(round(how_close, 3)),
-                absolute_percent=abs(round(100 * (how_close) / ref_diff, 3)),
+                absolute_percent=(
+                    abs(round(100 * (how_close) / ref_diff, 3))
+                    if ref_diff != 0
+                    else None
+                ),
                 is_negative=bool(how_close < 0),
             ),
         )
@@ -108,7 +113,8 @@ class Grade:
         # rabinerJuangStepPattern(6, "c").plot()
 
         axes = output_dtw.plot(type="twoway")
-        mpld3.save_html(axes.get_figure(), "test.html")
+        html_filename = f"{DynamicTimeWarp.__name__}_{stage_type.__name__}_{column_of_interest}.html"
+        mpld3.save_html(axes.get_figure(), html_filename)
 
         return DynamicTimeWarp(
             diff_name=DynamicTimeWarp.__name__,
@@ -118,10 +124,10 @@ class Grade:
             reference_length=output_dtw.N,
             total_distance=output_dtw.distance,
             normalized_distance=output_dtw.normalizedDistance,
-            html_plot=mpld3.fig_to_html(axes.get_figure()),
+            html_plot=html_filename,
         )
 
-    def compare(self) -> list:
+    def compare(self) -> list[BaseModel]:
         results = []
         for scenario in self.time_two_events_scenarios:
             results.append(self.__get_time_two_events_diff(*scenario))
