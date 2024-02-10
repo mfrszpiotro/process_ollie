@@ -71,7 +71,7 @@ class Grade:
         ref_event_b = self.reference.get_unique_event(event_b_type)
         com_diff = com_event_a.time - com_event_b.time
         ref_diff = ref_event_a.time - ref_event_b.time
-        how_close = com_diff - ref_diff
+        how_close_diff = com_diff - ref_diff
         return TimeTwoEvents(
             diff_name=TimeTwoEvents.__name__,
             event_a_name=event_a_type.__name__,
@@ -79,13 +79,13 @@ class Grade:
             time_diff_commit=round(com_diff, 3),
             time_diff_reference=round(ref_diff, 3),
             how_close=HowClose(
-                absolute=abs(round(how_close, 3)),
+                absolute=abs(round(how_close_diff, 3)),
                 absolute_percent=(
-                    abs(round(100 * (how_close) / ref_diff, 3))
+                    round(100 - abs(100 * (how_close_diff) / ref_diff), 3)
                     if ref_diff != 0
                     else None
                 ),
-                is_negative=bool(how_close < 0),
+                is_negative=bool(how_close_diff < 0),
             ),
         )
 
@@ -122,8 +122,8 @@ class Grade:
             column_name=column_of_interest,
             commit_length=output_dtw.M,
             reference_length=output_dtw.N,
-            total_distance=output_dtw.distance,
-            normalized_distance=output_dtw.normalizedDistance,
+            total_distance=round(output_dtw.distance, 3),
+            normalized_distance=round(output_dtw.normalizedDistance, 3),
             html_plot=html_filename,
         )
 
