@@ -27,7 +27,7 @@ and in which direction the next commit should be taken.
 """
 
 
-class DynamicTimeWarp(BaseModel):
+class DynamicTimeWarps(BaseModel):
     diff_name: str
     stage: str
     column_name: str
@@ -113,11 +113,11 @@ class Grade:
         # rabinerJuangStepPattern(6, "c").plot()
 
         axes = output_dtw.plot(type="twoway")
-        html_filename = f"{DynamicTimeWarp.__name__}_{stage_type.__name__}_{column_of_interest}.html"
+        html_filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}.html"
         mpld3.save_html(axes.get_figure(), html_filename)
 
-        return DynamicTimeWarp(
-            diff_name=DynamicTimeWarp.__name__,
+        return DynamicTimeWarps(
+            diff_name=DynamicTimeWarps.__name__,
             stage=stage_type.__name__,
             column_name=column_of_interest,
             commit_length=output_dtw.M,
@@ -127,10 +127,17 @@ class Grade:
             html_plot=html_filename,
         )
 
-    def compare(self) -> list[BaseModel]:
-        results = []
+    def compare(self) -> dict[list[BaseModel]]:
+        results = {
+            DynamicTimeWarps.__name__: [],
+            TimeTwoEvents.__name__: [],
+        }
         for scenario in self.time_two_events_scenarios:
-            results.append(self.__get_time_two_events_diff(*scenario))
+            results[TimeTwoEvents.__name__].append(
+                self.__get_time_two_events_diff(*scenario).model_dump()
+            )
         for scenario in self.dynamic_time_warp_scenarios:
-            results.append(self.__get_dynamic_time_warp_diff(*scenario))
+            results[DynamicTimeWarps.__name__].append(
+                self.__get_dynamic_time_warp_diff(*scenario).model_dump()
+            )
         return results
