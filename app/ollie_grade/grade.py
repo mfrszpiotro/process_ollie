@@ -113,7 +113,7 @@ class Grade:
         # rabinerJuangStepPattern(6, "c").plot()
 
         axes = output_dtw.plot(type="twoway")
-        filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}.html"
+        filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}"
         axes.get_figure().savefig(f"{filename}.png")
         mpld3.save_html(axes.get_figure(), f"{filename}.html")
 

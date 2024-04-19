@@ -5,22 +5,22 @@
             "stage": "Rising",
             "column_name": "crotch_angle_smooth",
             "commit_length": 12,
-            "reference_length": 11,
-            "total_distance": 39.643,
-            "normalized_distance": 3.604,
-            "html_plot": "DynamicTimeWarps_Rising_crotch_angle_smooth.html",
-            "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe html_plot gives a visual comparison representation between series."
+            "reference_length": 13,
+            "total_distance": 32.543,
+            "normalized_distance": 2.503,
+            "figure_name": "DynamicTimeWarps_Rising_crotch_angle_smooth",
+            "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe figure gives a visual comparison representation between series."
         },
         {
             "diff_name": "DynamicTimeWarps",
             "stage": "Falling",
             "column_name": "crotch_angle_smooth",
-            "commit_length": 14,
-            "reference_length": 14,
-            "total_distance": 47.392,
-            "normalized_distance": 3.385,
-            "html_plot": "DynamicTimeWarps_Falling_crotch_angle_smooth.html",
-            "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe html_plot gives a visual comparison representation between series."
+            "commit_length": 15,
+            "reference_length": 13,
+            "total_distance": 21.028,
+            "normalized_distance": 1.618,
+            "figure_name": "DynamicTimeWarps_Falling_crotch_angle_smooth",
+            "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe figure gives a visual comparison representation between series."
         }
     ],
     "TimeTwoEvents": [
@@ -28,12 +28,12 @@
             "diff_name": "TimeTwoEvents",
             "event_a_name": "TopHeight",
             "event_b_name": "FrontLiftOff",
-            "time_diff_commit": 0.365,
-            "time_diff_reference": 0.4,
+            "time_diff_commit": 400.0,
+            "time_diff_reference": 368.0,
             "how_close": {
-                "absolute": 0.035,
-                "absolute_percent": 91.273,
-                "is_negative": true,
+                "absolute": 32.0,
+                "absolute_percent": 91.304,
+                "is_negative": false,
                 "context": "commit_time_diff - reference_time_diff"
             },
             "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close the both intervals are, \nand in which direction the next commit should be taken.\n"
@@ -42,10 +42,10 @@
             "diff_name": "TimeTwoEvents",
             "event_a_name": "BackLiftOff",
             "event_b_name": "FrontLiftOff",
-            "time_diff_commit": 0.133,
+            "time_diff_commit": 133.0,
             "time_diff_reference": 0.0,
             "how_close": {
-                "absolute": 0.133,
+                "absolute": 133.0,
                 "absolute_percent": null,
                 "is_negative": false,
                 "context": "commit_time_diff - reference_time_diff"
@@ -56,12 +56,12 @@
             "diff_name": "TimeTwoEvents",
             "event_a_name": "TopHeight",
             "event_b_name": "TopAngle",
-            "time_diff_commit": 0.133,
-            "time_diff_reference": 0.068,
+            "time_diff_commit": -299.0,
+            "time_diff_reference": -233.0,
             "how_close": {
-                "absolute": 0.066,
-                "absolute_percent": 2.901,
-                "is_negative": false,
+                "absolute": 66.0,
+                "absolute_percent": 71.674,
+                "is_negative": true,
                 "context": "commit_time_diff - reference_time_diff"
             },
             "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close the both intervals are, \nand in which direction the next commit should be taken.\n"
