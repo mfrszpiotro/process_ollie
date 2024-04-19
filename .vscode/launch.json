@@ -6,14 +6,15 @@
     "configurations": [
         {
             "name": "processing",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "processing_app",
-            "justMyCode": true
+            "justMyCode": true,
+            "args": ["a", "b", "--test"]
         },
         {
             "name": "plotting",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "plot_app",
             "justMyCode": true
