@@ -5,12 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "processing",
+            "name": "processing cli goofy",
             "type": "debugpy",
             "request": "launch",
             "module": "processing_app",
             "justMyCode": true,
             "args": ["a", "b", "-t", "-cg", "-rg"]
+        },
+        {
+            "name": "processing cli regular",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "processing_app",
+            "justMyCode": true,
+            "args": ["data\\test\\test_commit.csv", "data\\test\\test_reference.csv"]
         },
         {
             "name": "plotting",
