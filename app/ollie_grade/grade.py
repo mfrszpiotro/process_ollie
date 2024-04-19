@@ -112,7 +112,7 @@ class Grade:
         # print(rabinerJuangStepPattern(6, "c"))
         # rabinerJuangStepPattern(6, "c").plot()
 
-        axes = output_dtw.plot(type="twoway")
+        axes = output_dtw.plot(type="twoway", xlab="Time [ms]", ylab=f"Angle between legs [deg]")
         filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}"
         axes.get_figure().savefig(f"{filename}.png")
         mpld3.save_html(axes.get_figure(), f"{filename}.html")
