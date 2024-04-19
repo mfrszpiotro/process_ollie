@@ -35,9 +35,9 @@ class DynamicTimeWarps(BaseModel):
     reference_length: int
     total_distance: float
     normalized_distance: float
-    html_plot: str | None = None
+    figure_name: str | None = None
     diff_description: str = """Dynamic Time Warp applied for two time series from given column within a given stage.
-The html_plot gives a visual comparison representation between series."""
+The figure gives a visual comparison representation between series."""
 
 
 class Grade:
@@ -113,8 +113,9 @@ class Grade:
         # rabinerJuangStepPattern(6, "c").plot()
 
         axes = output_dtw.plot(type="twoway")
-        html_filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}.html"
-        mpld3.save_html(axes.get_figure(), html_filename)
+        filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}.html"
+        axes.get_figure().savefig(f"{filename}.png")
+        mpld3.save_html(axes.get_figure(), f"{filename}.html")
 
         return DynamicTimeWarps(
             diff_name=DynamicTimeWarps.__name__,
@@ -124,7 +125,7 @@ class Grade:
             reference_length=output_dtw.N,
             total_distance=round(output_dtw.distance, 3),
             normalized_distance=round(output_dtw.normalizedDistance, 3),
-            html_plot=html_filename,
+            figure_name=f"{filename}",
         )
 
     def compare(self) -> dict[list[BaseModel]]:

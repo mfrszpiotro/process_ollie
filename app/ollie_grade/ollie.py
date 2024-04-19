@@ -24,7 +24,7 @@ class Ollie:
         self.context = strip_to_jump_by_time(jump)
         self.context = add_angle_columns(self.context)
         jump_start, jump_top_height, jump_finish = Ollie.__find_basic_events(
-            jump, is_goofy
+            self.context, is_goofy
         )
         self.prep = Preparing(self.context, jump_start, jump_top_height, is_goofy)
         self.rise = Rising(self.context, self.prep.finish, jump_top_height, is_goofy)
@@ -46,7 +46,7 @@ Whole ollie shape: {self.context.shape}
     @staticmethod
     def __find_basic_events(
         whole_jump_context: pd.DataFrame, is_goofy: bool
-    ) -> (Empty, TopHeight, Empty):
+    ) -> tuple[Empty, TopHeight, Empty]:
         start_series = whole_jump_context.iloc[0]
         start = Empty(start_series)
         top_height = TopHeight(

@@ -19,6 +19,7 @@ class Stage:
         self.finish = finish
         self.whole_context = whole_context
         self.stage_context = self.__strip_to_stage()
+        pass
 
     def __strip_to_stage(self) -> pd.DataFrame:
         df = self.whole_context
@@ -26,7 +27,9 @@ class Stage:
         finish_id = df.index[df.Time == self.finish.time].to_list()
         if len(start_id) > 1 or len(finish_id) > 1:
             raise Exception("Duplicated time instants were found.")
-        return df[start_id[0] : finish_id[0]]
+        if len(start_id) == 0 or len(finish_id) == 0:
+            raise Exception("No time instants were found.")
+        return df.loc[start_id[0] : finish_id[0]]
 
 
 class Preparing(Stage):
@@ -62,7 +65,7 @@ class Preparing(Stage):
         """
         point_of_interest = FrontLiftOff.get_point_of_interest(is_goofy)
         lift_off_point = search_min_floor_point(
-            whole_context, 0.4, 0, top.time, point_of_interest
+            whole_context, 400, 0, top.time, point_of_interest
         )
         return FrontLiftOff(lift_off_point, is_goofy)
 
@@ -104,7 +107,7 @@ class Rising(Stage):
         """
         point_of_interest = BackLiftOff.get_point_of_interest(is_goofy)
         lift_off_point = search_min_floor_point(
-            whole_context, 0.4, 0, top.time, point_of_interest
+            whole_context, 400, 0, top.time, point_of_interest
         )
         return BackLiftOff(lift_off_point, is_goofy)
 
@@ -121,7 +124,7 @@ class Rising(Stage):
             TopAngle: Event which indicates the moment of largest skater's crotch stretch.
         """
         point_of_interest = TopAngle
-        top_angle_point = search_max_angle_point(whole_context, 0.3, 0.3, top.time)
+        top_angle_point = search_max_angle_point(whole_context, 300, 300, top.time)
         return TopAngle(top_angle_point)
 
 
@@ -153,7 +156,7 @@ class Falling(Stage):
         """
         point_of_interest = Landed.get_point_of_interest(is_goofy)
         landed_point = search_min_floor_point(
-            whole_context, 0, 0.5, top.time, point_of_interest
+            whole_context, 0, 500, top.time, point_of_interest
         )
         return Landed(landed_point, is_goofy)
 

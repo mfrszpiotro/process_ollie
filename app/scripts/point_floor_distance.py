@@ -79,7 +79,7 @@ def strip_to_jump_by_frames(
 
 
 def strip_to_jump_by_time(
-    df: pd.DataFrame, jump_point_factor="HipRight", left_dist=0.5, right_dist=1.0
+    df: pd.DataFrame, jump_point_factor="HipRight", left_dist=500, right_dist=1000
 ) -> pd.DataFrame:
     df[f"{jump_point_factor}_floor_distance"] = _get_point_distance_from_floor(
         df[f"{jump_point_factor}_x"],

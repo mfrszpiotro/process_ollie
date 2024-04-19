@@ -15,7 +15,7 @@ def compare(commit_csv_filepath: str, reference_csv_filepath: str):
         ollie_good = Ollie(df, "good", is_goofy=True)
     except FileNotFoundError as e:
         print("One of the filepaths were invalid, try again.")
-        exit(1)
+        sys.exit(1)
     comparator = Grade(ollie_almost, ollie_good)
     json_results = comparator.compare()
     output_filepath = "comparison.json"
@@ -46,7 +46,7 @@ def parse_args(arguments: list) -> argparse.Namespace:
 if __name__ == "__main__":
     args = parse_args(sys.argv[1:])
     if args.test:
-        compare(test_cfg.OK_OLLIE_TEST_FILE_PATH, test_cfg.GOOD_OLLIE_TEST_FILE_PATH)
+        compare(test_cfg.TEST_COMMIT, test_cfg.TEST_REFERENCE)
     else:
         compare(args.commit_csv_filepath, args.reference_csv_filepath)
-    exit(0)
+    sys.exit(0)
