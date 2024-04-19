@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "processing_app",
             "justMyCode": true,
-            "args": ["a", "b", "--test"]
+            "args": ["a", "b", "-t", "-cg", "-rg"]
         },
         {
             "name": "plotting",
