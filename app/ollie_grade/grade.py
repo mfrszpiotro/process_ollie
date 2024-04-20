@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt, mpld3
 
 class HowClose(BaseModel):
     absolute: float
-    absolute_percent: float | None
+    relative_percent: float | None
     is_negative: bool
     context: str = "commit_time_diff - reference_time_diff"
 
@@ -80,7 +80,7 @@ class Grade:
             time_diff_reference=round(ref_diff, 3),
             how_close=HowClose(
                 absolute=abs(round(how_close_diff, 3)),
-                absolute_percent=(
+                relative_percent=(
                     round(100 - abs(100 * (how_close_diff) / ref_diff), 3)
                     if ref_diff != 0
                     else None
