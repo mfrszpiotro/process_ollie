@@ -2,7 +2,7 @@ from .ollie import Ollie
 from .events import *
 from .stages import *
 from pydantic import BaseModel
-from dtw import DTW, dtw, rabinerJuangStepPattern
+from dtw import DTW, dtw
 from datetime import datetime
 import matplotlib.pyplot as plt, mpld3
 
@@ -22,7 +22,7 @@ class TimeTwoEvents(BaseModel):
     time_diff_reference: float
     how_close: HowClose
     diff_description: str = """A time difference between two events is calculated for each Ollie performance (commit and reference). 
-Then those time differences are compared to determine how close the both intervals are, 
+Then those time differences are compared to determine how close both intervals are, 
 and in which direction the next commit should be taken.
 """
 
@@ -94,26 +94,29 @@ class Grade:
         stage_commit = self.commit.get_unique_stage(stage_type)
         stage_reference = self.reference.get_unique_stage(stage_type)
         query = stage_commit.stage_context[column_of_interest].to_numpy()
-        template = stage_reference.stage_context[column_of_interest].to_numpy()
+        reference = stage_reference.stage_context[column_of_interest].to_numpy()
 
         ## Display the warping curve, i.e. the alignment curve
-        alignment = dtw(query, template, keep_internals=True)
-        alignment.plot(type="threeway")
+        # alignment = dtw(query, template, keep_internals=True)
+        # alignment.plot(type="threeway")
 
         ## Align and plot with the Rabiner-Juang type VI-c unsmoothed recursion
         output_dtw = dtw(
-            query,
-            template,
-            keep_internals=True,
-            step_pattern=rabinerJuangStepPattern(6, "c"),
+            query, reference, keep_internals=True, step_pattern="asymmetric"
         )
-
         ## See the recursion relation, as formula and diagram
         # print(rabinerJuangStepPattern(6, "c"))
         # rabinerJuangStepPattern(6, "c").plot()
 
-        axes = output_dtw.plot(type="twoway", xlab="Time [ms]", ylab=f"Angle between legs [deg]", match_col="violet")
-        filename = f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}"
+        axes = output_dtw.plot(
+            type="twoway",
+            xlab="Time [ms]",
+            ylab=f"Angle between legs [deg]",
+            match_col="violet",
+        )
+        filename = (
+            f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}"
+        )
         axes.get_figure().savefig(f"{filename}.png")
         mpld3.save_html(axes.get_figure(), f"{filename}.html")
 

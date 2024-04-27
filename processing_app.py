@@ -1,17 +1,23 @@
 from app.ollie_grade.ollie import Ollie
 from app.ollie_grade.grade import Grade
 import app.ollie_grade.tests.config as test_cfg
+from app.config import USED_COLUMNS
 import pandas as pd
 import json
 import argparse
 import sys, os
 
 
-def compare(commit_csv_filepath: str, reference_csv_filepath: str, commit_goofy: bool = True, reference_goofy: bool = True):
+def compare(
+    commit_csv_filepath: str,
+    reference_csv_filepath: str,
+    commit_goofy: bool = True,
+    reference_goofy: bool = True,
+):
     try:
-        df = pd.read_csv(commit_csv_filepath)
+        df = pd.read_csv(commit_csv_filepath, usecols=USED_COLUMNS)
         ollie_almost = Ollie(df, "almost-good", is_goofy=commit_goofy)
-        df = pd.read_csv(reference_csv_filepath)
+        df = pd.read_csv(reference_csv_filepath, usecols=USED_COLUMNS)
         ollie_good = Ollie(df, "good", is_goofy=reference_goofy)
     except FileNotFoundError as e:
         print("One of the filepaths were invalid, try again.")
@@ -60,5 +66,10 @@ if __name__ == "__main__":
     if args.test:
         compare(test_cfg.TEST_COMMIT, test_cfg.TEST_REFERENCE)
     else:
-        compare(args.commit_csv_filepath, args.reference_csv_filepath, args.commit_goofy, args.reference_goofy)
+        compare(
+            args.commit_csv_filepath,
+            args.reference_csv_filepath,
+            args.commit_goofy,
+            args.reference_goofy,
+        )
     sys.exit(0)
