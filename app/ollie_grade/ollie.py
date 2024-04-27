@@ -21,7 +21,7 @@ class Ollie:
 
     def __init__(self, jump: pd.DataFrame, name: str, is_goofy: bool):
         self.name = name
-        self.context = strip_to_jump_by_time(jump)
+        self.context = strip_to_jump_by_time(jump, is_goofy)
         self.context = add_angle_columns(self.context)
         jump_start, jump_top_height, jump_finish = Ollie.__find_basic_events(
             self.context, is_goofy

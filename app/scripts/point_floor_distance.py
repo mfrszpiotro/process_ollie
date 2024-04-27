@@ -7,6 +7,10 @@ from .bounds_by_time import find_time_bounds_indexes
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
+def __get_jump_point_factor(is_goofy: bool):
+    return "HipRight" if is_goofy else "HipLeft"
+
+
 def _get_point_distance_from_floor(
     colx: pd.Series,
     coly: pd.Series,
@@ -60,10 +64,11 @@ def add_and_plot(df: pd.DataFrame, point_name: str):
 
 def strip_to_jump_by_frames(
     df: pd.DataFrame,
-    jump_point_factor="HipRight",
+    is_goofy=True,
     left_dist=15,
     right_dist=30,
 ) -> pd.DataFrame:
+    jump_point_factor = __get_jump_point_factor(is_goofy)
     df[f"{jump_point_factor}_floor_distance"] = _get_point_distance_from_floor(
         df[f"{jump_point_factor}_x"],
         df[f"{jump_point_factor}_y"],
@@ -79,8 +84,9 @@ def strip_to_jump_by_frames(
 
 
 def strip_to_jump_by_time(
-    df: pd.DataFrame, jump_point_factor="HipRight", left_dist=500, right_dist=1000
+    df: pd.DataFrame, is_goofy: bool, left_dist=500, right_dist=1000
 ) -> pd.DataFrame:
+    jump_point_factor = __get_jump_point_factor(is_goofy)
     df[f"{jump_point_factor}_floor_distance"] = _get_point_distance_from_floor(
         df[f"{jump_point_factor}_x"],
         df[f"{jump_point_factor}_y"],
@@ -102,13 +108,13 @@ def save_strip_to_jump(
     relative_path: str,
     subfolder: str,
     filename: str,
-    jump_point_factor="HipRight",
+    is_goofy,
     byTime=True,
 ):
     if byTime:
-        df = strip_to_jump_by_time(df, jump_point_factor)
+        df = strip_to_jump_by_time(df, is_goofy)
     else:
-        df = strip_to_jump_by_frames(df, jump_point_factor)
+        df = strip_to_jump_by_frames(df, is_goofy)
     full_filepath = os.path.join(relative_path, subfolder, f"jump_{filename}")
     df.to_csv(full_filepath, index=False)
 
