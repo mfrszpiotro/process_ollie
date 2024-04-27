@@ -6,8 +6,8 @@
             "column_name": "crotch_angle_smooth",
             "commit_length": 12,
             "reference_length": 13,
-            "total_distance": 32.543,
-            "normalized_distance": 2.503,
+            "total_distance": 4.416,
+            "normalized_distance": 0.34,
             "figure_name": "DynamicTimeWarps_Rising_crotch_angle_smooth",
             "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe figure gives a visual comparison representation between series."
         },
@@ -17,8 +17,8 @@
             "column_name": "crotch_angle_smooth",
             "commit_length": 15,
             "reference_length": 13,
-            "total_distance": 21.028,
-            "normalized_distance": 1.618,
+            "total_distance": 14.97,
+            "normalized_distance": 1.152,
             "figure_name": "DynamicTimeWarps_Falling_crotch_angle_smooth",
             "diff_description": "Dynamic Time Warp applied for two time series from given column within a given stage.\nThe figure gives a visual comparison representation between series."
         }
@@ -32,11 +32,11 @@
             "time_diff_reference": 368.0,
             "how_close": {
                 "absolute": 32.0,
-                "absolute_percent": 91.304,
+                "relative_percent": 91.304,
                 "is_negative": false,
                 "context": "commit_time_diff - reference_time_diff"
             },
-            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close the both intervals are, \nand in which direction the next commit should be taken.\n"
+            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close both intervals are, \nand in which direction the next commit should be taken.\n"
         },
         {
             "diff_name": "TimeTwoEvents",
@@ -46,25 +46,25 @@
             "time_diff_reference": 0.0,
             "how_close": {
                 "absolute": 133.0,
-                "absolute_percent": null,
+                "relative_percent": null,
                 "is_negative": false,
                 "context": "commit_time_diff - reference_time_diff"
             },
-            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close the both intervals are, \nand in which direction the next commit should be taken.\n"
+            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close both intervals are, \nand in which direction the next commit should be taken.\n"
         },
         {
             "diff_name": "TimeTwoEvents",
             "event_a_name": "TopHeight",
             "event_b_name": "TopAngle",
-            "time_diff_commit": -299.0,
-            "time_diff_reference": -233.0,
+            "time_diff_commit": -33.0,
+            "time_diff_reference": -33.0,
             "how_close": {
-                "absolute": 66.0,
-                "absolute_percent": 71.674,
-                "is_negative": true,
+                "absolute": 0.0,
+                "relative_percent": 100.0,
+                "is_negative": false,
                 "context": "commit_time_diff - reference_time_diff"
             },
-            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close the both intervals are, \nand in which direction the next commit should be taken.\n"
+            "diff_description": "A time difference between two events is calculated for each Ollie performance (commit and reference). \nThen those time differences are compared to determine how close both intervals are, \nand in which direction the next commit should be taken.\n"
         }
     ]
 }
