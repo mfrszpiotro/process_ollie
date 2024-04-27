@@ -1,5 +1,6 @@
 *.lnk
 *.xef
+*.html
 env/
 
 # Byte-compiled / optimized / DLL files
