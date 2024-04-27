@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from dtw import DTW, dtw
 from datetime import datetime
 import matplotlib.pyplot as plt, mpld3
+from matplotlib.axes import Axes
+import numpy as np
 
 
 class HowClose(BaseModel):
@@ -114,6 +116,13 @@ class Grade:
             ylab=f"Angle between legs [deg]",
             match_col="violet",
         )
+        if isinstance(axes, Axes):
+            axes.set_title(f"{column_of_interest} in {stage_type.__name__} stage")
+            axes.legend(["commit", "reference"])
+            axes.set_xticks(
+                ticks=plt.xticks()[0][1:],
+                labels=30 * np.array(plt.xticks()[0][1:], dtype=np.int32),
+            )
         filename = (
             f"{DynamicTimeWarps.__name__}_{stage_type.__name__}_{column_of_interest}"
         )
