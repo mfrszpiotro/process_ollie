@@ -4,6 +4,7 @@ from ..scripts.point_floor_distance import (
     find_max_distance,
     strip_to_jump_by_time,
 )
+from ..scripts.angle import _add as add_angle_columns
 import pandas as pd
 
 
@@ -20,9 +21,10 @@ class Ollie:
 
     def __init__(self, jump: pd.DataFrame, name: str, is_goofy: bool):
         self.name = name
-        self.context = strip_to_jump_by_time(jump)
+        self.context = strip_to_jump_by_time(jump, is_goofy)
+        self.context = add_angle_columns(self.context)
         jump_start, jump_top_height, jump_finish = Ollie.__find_basic_events(
-            jump, is_goofy
+            self.context, is_goofy
         )
         self.prep = Preparing(self.context, jump_start, jump_top_height, is_goofy)
         self.rise = Rising(self.context, self.prep.finish, jump_top_height, is_goofy)
@@ -44,7 +46,7 @@ Whole ollie shape: {self.context.shape}
     @staticmethod
     def __find_basic_events(
         whole_jump_context: pd.DataFrame, is_goofy: bool
-    ) -> (Empty, TopHeight, Empty):
+    ) -> tuple[Empty, TopHeight, Empty]:
         start_series = whole_jump_context.iloc[0]
         start = Empty(start_series)
         top_height = TopHeight(
@@ -71,9 +73,25 @@ Whole ollie shape: {self.context.shape}
             found_event = self.rise.top_angle
         else:
             raise NotImplementedError(
-                "One of the events were not found or initialized."
+                f"The event {event_type.__name__}  were not found or initialized."
             )
         return found_event
+
+    def get_unique_stage(self, stage_type: type) -> Stage:
+        found_stage = None
+        if stage_type == Preparing:
+            found_stage = self.prep
+        elif stage_type == Rising:
+            found_stage = self.rise
+        elif stage_type == Falling:
+            found_stage = self.fall
+        elif stage_type == Landing:
+            found_stage = self.land
+        else:
+            raise NotImplementedError(
+                f"The stage {stage_type.__name__} were not found or initialized."
+            )
+        return found_stage
 
     # todo
     # def compare(self, to_compare) -> dict:
