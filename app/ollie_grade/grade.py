@@ -74,6 +74,13 @@ class Grade:
         com_diff = com_event_a.time - com_event_b.time
         ref_diff = ref_event_a.time - ref_event_b.time
         how_close_diff = com_diff - ref_diff
+        how_close_rel_percent = None
+        if ref_diff == 0 == com_diff:
+            how_close_rel_percent = 100
+        elif ref_diff != 0:
+            how_close_rel_percent = round(
+                100 - abs(100 * (how_close_diff) / ref_diff), 3
+            )
         return TimeTwoEvents(
             diff_name=TimeTwoEvents.__name__,
             event_a_name=event_a_type.__name__,
@@ -82,11 +89,7 @@ class Grade:
             time_diff_reference=round(ref_diff, 3),
             how_close=HowClose(
                 absolute=abs(round(how_close_diff, 3)),
-                relative_percent=(
-                    round(100 - abs(100 * (how_close_diff) / ref_diff), 3)
-                    if ref_diff != 0
-                    else None
-                ),
+                relative_percent=how_close_rel_percent,
                 is_negative=bool(how_close_diff < 0),
             ),
         )
@@ -117,7 +120,9 @@ class Grade:
             match_col="violet",
         )
         if isinstance(axes, Axes):
-            axes.set_title(f"{column_of_interest} in {stage_type.__name__} stage")
+            axes.set_title(
+                f"{column_of_interest}'s compared - {stage_type.__name__} stage"
+            )
             axes.legend(["commit", "reference"])
             axes.set_xticks(
                 ticks=plt.xticks()[0][1:],
