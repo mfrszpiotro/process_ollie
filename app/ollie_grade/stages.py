@@ -65,7 +65,7 @@ class Preparing(Stage):
         """
         point_of_interest = FrontLiftOff.get_point_of_interest(is_goofy)
         lift_off_point = search_min_floor_point(
-            whole_context, 400, 0, top.time, point_of_interest
+            whole_context, 500, 0, top.time, point_of_interest
         )
         return FrontLiftOff(lift_off_point, is_goofy)
 
@@ -156,7 +156,7 @@ class Falling(Stage):
         """
         point_of_interest = Landed.get_point_of_interest(is_goofy)
         landed_point = search_min_floor_point(
-            whole_context, 0, 500, top.time, point_of_interest
+            whole_context, 0, 400, top.time, point_of_interest
         )
         return Landed(landed_point, is_goofy)
 
