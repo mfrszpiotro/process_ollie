@@ -62,7 +62,13 @@ def _get_angle(ptA: pd.Series, ptB: pd.Series, ptC: pd.Series, ptD: pd.Series) -
 
 def _add(df: pd.DataFrame):
     df["crotch_angle"] = df.apply(
-        lambda row: _get_angle(row[1:4], row[4:7], row[7:10], row[10:13]), axis=1
+        lambda row: _get_angle(
+            row.loc[["KneeLeft_x", "KneeLeft_y", "KneeLeft_z"]],
+            row.loc[["HipLeft_x", "HipLeft_y", "HipLeft_z"]],
+            row.loc[["KneeRight_x", "KneeRight_y", "KneeRight_z"]],
+            row.loc[["HipRight_x", "HipRight_y", "HipRight_z"]],
+        ),
+        axis=1,
     )
     df["crotch_angle_smooth"] = signal.savgol_filter(
         df["crotch_angle"], window_length=11, polyorder=3, mode="nearest"
@@ -76,15 +82,17 @@ def add_and_plot(df: pd.DataFrame):
         kind="line",
         x="Time",
         y="crotch_angle_smooth",
-        label="Smoothed crotch angle [deg]",
+        label="Smoothed crotch angle",
     )
     df.plot(
         kind="line",
         x="Time",
         y="crotch_angle",
-        label="Crotch angle [deg]",
+        label="Crotch angle",
         title="Crotch angle over time while performing Ollie",
         ax=ax_crotch,
+        xlabel="time [ms]",
+        ylabel="angle [deg]",
     )
 
 
