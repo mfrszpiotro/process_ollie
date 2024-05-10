@@ -5,20 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "processing cli goofy",
+            "name": "comparing cli goofy",
             "type": "debugpy",
             "request": "launch",
-            "module": "processing_app",
+            "module": "comparing_app",
             "justMyCode": true,
             "args": ["a", "b", "-t", "-cg", "-rg"]
         },
         {
-            "name": "processing cli regular",
+            "name": "comparing cli regular",
             "type": "debugpy",
             "request": "launch",
-            "module": "processing_app",
+            "module": "comparing_app",
             "justMyCode": true,
-            "args": ["data\\test\\test_commit.csv", "data\\test\\test_reference.csv"]
+            "args": ["data\\test\\test_reference.csv", "data\\interim_time\\test\\room429.csv"]
         },
         {
             "name": "plotting",
