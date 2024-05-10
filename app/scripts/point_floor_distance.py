@@ -50,15 +50,17 @@ def add_and_plot(df: pd.DataFrame, point_name: str):
         kind="line",
         x="Time",
         y=f"{point_name}_floor_distance_smooth",
-        label=f"Smoothed {point_name}-floor distance [unit]",
+        label=f"Smoothed {point_name}-floor distance",
     )
     df.plot(
         kind="line",
         x="Time",
         y=f"{point_name}_floor_distance",
-        label=f"{point_name}-floor distance [unit]",
+        label=f"{point_name}-floor distance",
         title=f"{point_name}-floor distance over time while performing Ollie",
-        ax=ax_floor_dist,
+        # ax=ax_floor_dist,
+        xlabel="time [ms]",
+        ylabel="distance [m]",
     )
 
 

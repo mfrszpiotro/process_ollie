@@ -36,13 +36,13 @@ def add_and_plot(df: pd.DataFrame, point_name_a: str, point_name_b: str):
         kind="line",
         x="Time",
         y=f"{point_name_a}_{point_name_b}_distance_smooth",
-        label=f"Smoothed {point_name_a}-{point_name_b} distance [unit]",
+        label=f"Smoothed {point_name_a}-{point_name_b} distance [m]",
     )
     df.plot(
         kind="line",
         x="Time",
         y=f"{point_name_a}_{point_name_b}_distance",
-        label=f"{point_name_a}-{point_name_b} distance [unit]",
+        label=f"{point_name_a}-{point_name_b} distance [m]",
         title=f"{point_name_a}-{point_name_b} distance over time while performing Ollie",
         ax=ax_floor_dist,
     )
